@@ -1,14 +1,17 @@
-variable "aws_region" {
-  description = "The AWS region to deploy to (e.g eu-west-1)"
-  default = "eu-central-1"
+variable "resource_name" {
+    description = "Constructed name to use for the resource"
 }
 
-variable "environment" {
-    description = "The environment of the application. I.e Production, Test. Used to name and tag resources"
+variable "common_tags" {
+    description = "Tags for the resources"
 }
 
 variable "application_name" {
     description = "The name of the application. Used to name and tag resources. This CAN NOT contain hyphens or underscores"
+}
+
+variable "environment" {
+    description = "The environment of the application. I.e Production, Test. Used to name and tag resources"
 }
 
 variable "private_subnet_ids" {
@@ -51,7 +54,7 @@ variable "serverless_seconds_until_pause" {
     description = "Optional. Seconds to wait until RDS Serverless instance pauses"
     default = 600
     type = number
-}
+} 
 
 variable "serverless_min_capacity_units" {
     description = "Minimum capacity units for RDS serverless instance. Defaults to 1"
@@ -227,47 +230,6 @@ variable "performance_insights_kms_key_id" {
     description = "Optional. The ARN for the KMS key to encrypt Performance Insights data. "
 }
 
-variable "prefix" {
-    description = "Prefix used for naming resources. I.e prefix-applicationname. Leave blank if not required"
-    default = ""
-}
-
-variable "suffix" {
-    description = "Suffix used for naming resources. I.e applicationname-suffix. Leave blank if not required"
-    default = ""
-}
-
-variable "prefix_separator" {
-    description = "Prefix separator used for naming resources. For example, defining - will name resources as prefix-applicationname. Defining _ will name resources as prefix_applicationname. Leave blank if not required"
-    default = ""
-}
-
-variable "suffix_separator" {
-    description = "Suffix separator used for naming resources. For example, defining _ will name resources as applicationname_suffix. Defining - will name resources as applicationname-suffix. Leave blank if not required"
-    default = ""
-}
-
-#Proxy
-variable "include_proxy" {
-    description = "Optionally include proxy to help manage database connections"
-    default = false
-}
-
-variable "proxy_debug_logging" {
-    description = "Turn on debug logging for the proxy"
-    default = false
-}
-
-variable "idle_client_timeout" {
-    description = "Idle client timeout of the RDS proxy (keep connection alive)"
-    default = 1800
-}
-
-variable "proxy_require_tls" {
-    description = "Require tls on the RDS proxy. Default: true"
-    default = true
-}
-
 variable "allocated_storage" {
     description = "Amount of storage (in GB) allocated to DB (non-aurora only)"
     default = 20
@@ -278,62 +240,12 @@ variable "storage_type" {
     default = "gp2"
 }
 
-#Secret
-variable "include_secret" {
-    description = "Optionally create a secret to link to the database (if include proxy is true then secret will be created, even if this is set to false)"
-    default = false
-}
-
-variable "secret_description" {
-  description = "This field is the description for the secret manager object"
-  default     = "secret manager for mysql/aurora"
-}
-
-variable "rotation_days" {
-  default     = 30
-  description = "How often in days the secret will be rotated"
-}
-
-variable "recovery_window_in_days" {
-  default = 0
-  description = "How many days it will take to delete the secret"
-}
-
-variable "db_client_username" {
-  description = "The MySQL/Aurora username you chose during RDS creation or another one that you want to rotate"
-  default = "ClientUser"
-}
-
-variable "db_client_password" {
-  description = "The password that you want to rotate, this will be changed after the creation"
-  default = ""
-}
-
-variable "enable_secret_rotation" {
-    description = "Provision a lambda to rotate the secret (defaults to true)"
-    default = true
-}
-
-variable "service_iam_username" {
-  description = "The service IAM username to add GetSecretValue permission to"
-    type = string
-    default = null
-}
-
-variable "cidr_block_data_subnet" {
-    type = list
-    description = "A list of CIDR blocks for data subnets. Used for SQL security group"
-}
-
-variable "cluster_parameter_group_settings" {
-  type        = list
-  description = "A list of cluster parameter group settings in the format 'name=value'"
-  default     = []
-}
-
 variable "instance_parameter_group_settings" {
-  type        = list
-  description = "A list of instance parameter group settings in the format 'name=value'"
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  description = "A list of instance parameter group settings"
   default     = []
 }
 
