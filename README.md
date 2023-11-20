@@ -29,6 +29,7 @@ Terraform module for AWS RDS instances
 | <a name="module_db_proxy"></a> [db\_proxy](#module\_db\_proxy) | ./modules/rds_proxy | n/a |
 | <a name="module_db_subnet_group"></a> [db\_subnet\_group](#module\_db\_subnet\_group) | ./modules/rds_subnet_group | n/a |
 | <a name="module_enhanced_monitoring_iam_role"></a> [enhanced\_monitoring\_iam\_role](#module\_enhanced\_monitoring\_iam\_role) | ./modules/enhanced_monitoring_role | n/a |
+| <a name="module_rds_instance"></a> [rds\_instance](#module\_rds\_instance) | ./modules/rds_instance | n/a |
 
 ## Resources
 
