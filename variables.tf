@@ -390,7 +390,7 @@ variable "parameter_group_name" {
   default     = null
 }
 
-variable "parameter_group_use_name_prefix" {
+variable "parameter_group_use_name_prefix" { # It is good to have default value as true in case of upgrades as it results in new parameter group to be created with new engine version
   description = "Determines whether to use `parameter_group_name` as is or create a unique name beginning with the `parameter_group_name` as the prefix"
   type        = bool
   default     = true
