@@ -10,15 +10,15 @@ locals {
   create_db_parameter_group = true
   # parameter_group_name_id = local.create_db_parameter_group ? module.db_parameter_group.db_parameter_group_id : var.parameter_group_name
   pramater_group_family = local.create_db_parameter_group && var.parameter_group_family == null ? "${var.engine}${var.major_engine_version}" : var.parameter_group_family
-  instance_parameters = merge([
+  instance_parameters = concat([
     {
-      name         = "rds.force_ssl"
-      value        = 1
-      apply_method = "immediate"
-    }
-  ], var.instance_parameters)
+      "name"         = "rds.force_ssl"
+      "value"        = 1
+      "apply_method" = "immediate"
+    }]
+  , var.instance_parameters)
 
-  cluster_parameters = merge([
+  cluster_parameters = concat([
     {
       name         = "rds.force_ssl"
       value        = 1
@@ -92,7 +92,7 @@ module "db_parameter_group" {
   source          = "./modules/instance_parameter_group"
   count           = local.create_db_parameter_group ? 1 : 0
   name            = var.identifier
-  use_name_prefix = true #var.parameter_group_use_name_prefix
+  use_name_prefix = var.parameter_group_use_name_prefix
   description     = var.parameter_group_description
   family          = local.pramater_group_family
   parameters      = local.instance_parameters
