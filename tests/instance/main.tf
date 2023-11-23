@@ -47,7 +47,7 @@ module "rds_instance_test" {
   include_proxy       = true
   proxy_debug_logging = true
 
-  monitoring_interval = 60
+  enhanced_monitoring_interval = 60
 
 }
 
