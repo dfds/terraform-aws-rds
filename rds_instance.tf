@@ -2,18 +2,31 @@ locals {
   config = {
     postgres = {
       prod = {
-        "instance_class" : "db.r6g.xlarge",
+        "inst_class" : "db.r6g.xlarge",
         "allocated_storage" : 500,
-        "port" : 5432
-      }
+        "port" : 5432,
+        "multi_az" : "true",
+      },
+    }
+      stagging = {
+        "inst_class" : "db.m5d.large",
+        "allocated_storage" : 75,
+        "port" : 5432,
+        "multi_az" : "false",
+      },
+      uat = {
+        "inst_class" : "db.t3.micro",
+        "allocated_storage" : 20,
+        "port" : 5432,
+        "multi_az" : "false",
     }
   }
 
   default_config    = local.config[var.engine][var.environment]
-  instance_class    = var.instance_class != null ? var.instance_class : local.default_config.instance_class
+  inst_class        = var.instance_class != null ? var.instance_class : local.default_config.instance_class
   allocated_storage = var.allocated_storage != null ? var.allocated_storage : local.default_config.allocated_storage
   port              = var.port != null ? var.port : local.default_config.port
-  
+  multi_az          = var.multi_az !=null ? var.multi_az : local.default_config.multi_az
 }
 
 module "rds_instance" {
