@@ -2,8 +2,6 @@
 # Get ID of created Security Group
 ##################################
 locals {
-  #   create = var.create
-
   this_sg_id = var.create_sg ? concat(aws_security_group.this.*.id, aws_security_group.this_name_prefix.*.id, [""])[0] : var.security_group_id
 }
 
@@ -315,37 +313,34 @@ resource "aws_security_group_rule" "ingress_with_cidr_blocks" {
 #   )
 # }
 
-# # Security group rules with "self", but without "cidr_blocks" and "source_security_group_id"
-# resource "aws_security_group_rule" "ingress_with_self" {
-#   count = local.create ? length(var.ingress_with_self) : 0
+# Security group rules with "self", but without "cidr_blocks" and "source_security_group_id"
+resource "aws_security_group_rule" "ingress_with_self" {
+  count = length(var.ingress_with_self)
 
-#   security_group_id = local.this_sg_id
-#   type              = "ingress"
+  security_group_id = local.this_sg_id
+  type              = "ingress"
 
-#   self            = lookup(var.ingress_with_self[count.index], "self", true)
-#   prefix_list_ids = var.ingress_prefix_list_ids
-#   description = lookup(
-#     var.ingress_with_self[count.index],
-#     "description",
-#     "Ingress Rule",
-#   )
+  self            = lookup(var.ingress_with_self[count.index], "self", true)
+  prefix_list_ids = var.ingress_prefix_list_ids
+  description = lookup(
+    var.ingress_with_self[count.index],
+    "description",
+    "Ingress Rule",
+  )
 
-#   from_port = lookup(
-#     var.ingress_with_self[count.index],
-#     "from_port",
-#     var.rules[lookup(var.ingress_with_self[count.index], "rule", "_")][0],
-#   )
-#   to_port = lookup(
-#     var.ingress_with_self[count.index],
-#     "to_port",
-#     var.rules[lookup(var.ingress_with_self[count.index], "rule", "_")][1],
-#   )
-#   protocol = lookup(
-#     var.ingress_with_self[count.index],
-#     "protocol",
-#     var.rules[lookup(var.ingress_with_self[count.index], "rule", "_")][2],
-#   )
-# }
+  from_port = lookup(
+    var.ingress_with_self[count.index],
+    "from_port",
+  )
+  to_port = lookup(
+    var.ingress_with_self[count.index],
+    "to_port",
+  )
+  protocol = lookup(
+    var.ingress_with_self[count.index],
+    "protocol",
+  )
+}
 
 # # Computed - Security group rules with "self", but without "cidr_blocks" and "source_security_group_id"
 # resource "aws_security_group_rule" "computed_ingress_with_self" {

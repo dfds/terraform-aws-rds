@@ -349,6 +349,6 @@ module "security_group" { # update with another rule for public access
   vpc_id      = var.vpc_id
 
   ingress_with_cidr_blocks = var.rds_security_group_rules.ingress_rules
-
-  tags = var.tags
+  ingress_with_self        = var.rds_security_group_rules.ingress_with_self
+  tags                     = var.tags
 }
