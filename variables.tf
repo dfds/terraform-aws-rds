@@ -408,12 +408,6 @@ variable "parameter_group_family" {
   default     = null # varies depending on engine and version and instance type
 }
 
-# variable "family" { # TODO: Remove
-#   description = "The family of the DB parameter group"
-#   type        = string
-#   default     = null # varies depending on engine and version and instance type
-# }
-
 variable "instance_parameters" {
   description = "A list of DB parameters (map) to apply"
   type        = list(map(string))
