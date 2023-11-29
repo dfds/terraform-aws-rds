@@ -9,7 +9,7 @@ locals {
   instance_parameters = concat([
     {
       "name"         = "rds.force_ssl"
-      "value"        = 1
+      "value"        = 1 # this might need to be changed back and forth to ensure apply_method is applied. See here: https://github.com/hashicorp/terraform-provider-aws/pull/24737
       "apply_method" = "immediate"
     }]
   , var.instance_parameters)
