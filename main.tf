@@ -221,17 +221,17 @@ module "db_cluster_serverless" {
 
 
 
-module "db_proxy" { # What is endpoints? specifc endpoints for read and or writes?
-  source = "./modules/rds_proxy"
-  count  = var.include_proxy ? 1 : 0
-  tags                = var.tags
-  name                = var.identifier # "proxy" default is identifier-proxy
-  auth                = local.proxy_auth_config
-  debug_logging       = var.proxy_debug_logging
-  engine_family       = var.proxy_engine_family
-  idle_client_timeout = var.idle_client_timeout
-  require_tls         = var.proxy_require_tls
-  role_arn            = try(module.db_instance[0].iam_role_for_aws_services.arn, null)
+module "db_proxy" {
+  source                                        = "./modules/rds_proxy"
+  count                                         = var.include_proxy ? 1 : 0
+  tags                                          = var.tags
+  name                                          = var.identifier
+  auth                                          = local.proxy_auth_config
+  debug_logging                                 = var.proxy_debug_logging
+  engine_family                                 = var.proxy_engine_family
+  idle_client_timeout                           = var.idle_client_timeout
+  require_tls                                   = var.proxy_require_tls
+  role_arn                                      = try(module.db_instance[0].iam_role_for_aws_services.arn, null)
   vpc_security_group_ids                        = var.rds_proxy_security_group_ids
   vpc_subnet_ids                                = var.subnet_ids # maybe dedicated subnets for proxy?
   proxy_tags                                    = var.tags
@@ -250,7 +250,6 @@ module "db_proxy" { # What is endpoints? specifc endpoints for read and or write
   log_group_retention_in_days                   = var.cloudwatch_log_group_retention_in_days
   log_group_kms_key_id                          = var.cloudwatch_log_group_kms_key_id
   log_group_tags                                = var.tags
-  # depends_on = [ module.cluster, module.db  ]
 }
 
 module "security_group" { # update with another rule for public access
