@@ -43,7 +43,7 @@ module "rds_instance_test" {
 
   rds_proxy_security_group_ids = [aws_security_group.rds_proxy_sg.id]
 
-  include_proxy       = false
+  include_proxy       = true
   proxy_debug_logging = true
 
   enhanced_monitoring_interval = 0
