@@ -125,8 +125,6 @@ resource "aws_db_instance" "this" {
 
   tags = var.tags
 
-  # depends_on = [aws_cloudwatch_log_group.this]
-
   timeouts {
     create = lookup(var.timeouts, "create", null)
     delete = lookup(var.timeouts, "delete", null)

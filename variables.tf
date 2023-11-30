@@ -133,6 +133,7 @@ variable "final_snapshot_identifier_prefix" {
 variable "instance_class" {
   description = "The instance type of the RDS instance"
   type        = string
+  default     = ""
 }
 
 variable "db_name" {
@@ -613,11 +614,11 @@ variable "cluster_enable_http_endpoint" {
   default     = null
 }
 
-variable "cluster_engine_mode" {
-  description = "The database engine mode. Valid values: `global`, `multimaster`, `parallelquery`, `provisioned`, `serverless`. Defaults to: `provisioned`"
-  type        = string
-  default     = "provisioned"
-}
+# variable "cluster_engine_mode" {
+#   description = "The database engine mode. Valid values: `global`, `multimaster`, `parallelquery`, `provisioned`, `serverless`. Defaults to: `provisioned`"
+#   type        = string
+#   default     = "provisioned"
+# }
 
 variable "cluster_global_cluster_identifier" {
   description = "The global cluster identifier specified on `aws_rds_global_cluster`"
@@ -852,9 +853,7 @@ variable "is_serverless" { # tempprary variable for testing
 ################################################################################
 # Security Group
 ################################################################################
-# variable "vpc_cidr_block" {
 
-# }
 variable "vpc_id" { # TODO: include?
   type    = string
   default = null
@@ -883,3 +882,8 @@ variable "kubernetes_namespace" {
   type        = string
   default     = null
 }
+
+
+# variable "stage" {
+#   type = string
+# }

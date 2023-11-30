@@ -72,3 +72,19 @@ locals {
 
   engine_version = var.major_engine_version
 }
+
+
+resource "null_resource" "validate_instance_type_proxy" { # need to enforce dependency in proxy module
+  count = var.is_db_cluster && var.include_proxy ? 1 : 0
+
+  provisioner "local-exec" {
+    command = "Running a check"
+  }
+
+  lifecycle {
+    precondition {
+      condition     = var.is_db_cluster && var.include_proxy
+      error_message = "Cannot create a proxy for a DB cluster"
+    }
+  }
+}
