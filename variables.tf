@@ -1,6 +1,5 @@
 # Expose vars for DB instance. Override defaults with sensible values for DFDS context
 
-
 ################################################################################
 # Instance specific variables - applicable to cluster instances as well
 ################################################################################
@@ -145,7 +144,6 @@ variable "db_name" {
 variable "username" {
   description = "Username for the master DB user"
   type        = string
-  default     = null # TODO: required
 }
 
 variable "password" {
@@ -225,8 +223,7 @@ variable "enhanced_monitoring_role_arn" {
 variable "enhanced_monitoring_role_name" {
   description = "Name of the IAM role which will be created when create_monitoring_role is enabled"
   type        = string
-  # default     = "rds-monitoring-role"
-  default = null
+  default     = null
 }
 
 variable "enhanced_monitoring_role_use_name_prefix" {
@@ -259,7 +256,7 @@ variable "enhanced_monitoring_iam_role_path" {
   default     = null
 }
 
-variable "allow_major_version_upgrade" { # keep or remove or set default ?
+variable "allow_major_version_upgrade" {
   description = "Indicates that major version upgrades are allowed. Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible"
   type        = bool
   default     = false
@@ -280,8 +277,7 @@ variable "apply_immediately" {
 variable "maintenance_window" {
   description = "The window to perform maintenance in. Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'"
   type        = string
-  #   default     = null
-  default = "Sat:18:00-Sat:20:00" # This is adjusted in accordance with AWS Backup schedule, see info here: https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started
+  default     = "Sat:18:00-Sat:20:00" # This is adjusted in accordance with AWS Backup schedule, see info here: https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started
 }
 # Continuous backup takes place between 8 PM and 5 AM UTC.
 # Snapshot backups take place between 3 AM and 7 AM UTC.
@@ -559,9 +555,6 @@ variable "cloudwatch_log_group_kms_key_id" {
   type        = string
   default     = null
 }
-
-
-
 
 ################################################################################
 # Cluster specific variables
