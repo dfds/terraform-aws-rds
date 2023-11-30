@@ -133,7 +133,7 @@ variable "engine" {
 }
 
 variable "engine_mode" {
-  description = "The database engine mode. Valid values: `global`, `multimaster`, `parallelquery`, `provisioned`, `serverless`. Defaults to: `provisioned`"
+  description = "The database engine mode. Valid values: `global`, `multimaster`, `parallelquery`, `provisioned`, `serverless`. Defaults to: `provisioned`. `serverless` applies only to Aurora Serverless v1"
   type        = string
   default     = "provisioned"
 }

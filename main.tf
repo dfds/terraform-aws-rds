@@ -21,7 +21,7 @@ module "db_parameter_group" {
   description     = var.parameter_group_description
   family          = local.pramater_group_family
   parameters      = local.instance_parameters
-  tags            = merge(var.tags, var.db_parameter_group_tags) # additional tagging for parameter group?
+  tags            = merge(var.tags, var.db_parameter_group_tags)
 }
 
 module "db_subnet_group" {
@@ -79,7 +79,7 @@ module "db_instance" {
   vpc_security_group_ids                = [module.security_group.security_group_id]
   db_subnet_group_name                  = local.db_subnet_group_name
   parameter_group_name                  = module.db_parameter_group[0].db_parameter_group_id
-  option_group_name                     = null # Not supported for postgresql
+  option_group_name                     = null # Not supported in postgresql
   network_type                          = var.network_type
   availability_zone                     = var.availability_zone
   multi_az                              = var.multi_az
@@ -159,9 +159,9 @@ module "db_multi_az_cluster" {
 module "db_cluster_serverless" { # TODO: Revisit defaults
   source                      = "./modules/rds_aurora"
   count                       = local.is_serverless ? 1 : 0
-  name                        = "${var.identifier}-postgresqlv2"
+  name                        = var.identifier
   engine                      = "aurora-postgresql"
-  engine_mode                 = "serverless" # "provisioned" # TODO: change to serverless and verify..
+  engine_mode                 = "provisioned"
   engine_version              = local.engine_version
   storage_encrypted           = var.storage_encrypted
   master_username             = var.username
@@ -174,11 +174,11 @@ module "db_cluster_serverless" { # TODO: Revisit defaults
   skip_final_snapshot         = var.skip_final_snapshot
   instance_class              = "db.serverless"
   tags                        = var.tags
-  serverlessv2_scaling_configuration = {
+  serverlessv2_scaling_configuration = { # TODO: Turn values into default in the variable
     min_capacity = 2
-    max_capacity = 10
+    max_capacity = 5
   }
-  instances = {
+  instances = { # TODO: Revisit this?
     one = {}
     two = {}
   }

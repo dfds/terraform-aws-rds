@@ -145,7 +145,7 @@ variable "db_name" {
 variable "username" {
   description = "Username for the master DB user"
   type        = string
-  default     = null
+  default     = null # TODO: required
 }
 
 variable "password" {
@@ -440,11 +440,11 @@ variable "option_group_description" {
   default     = null
 }
 
-variable "major_engine_version" {
+variable "major_engine_version" { # TODO: introduce latest as default
   description = "Specifies the major version of the engine that this option group should be associated with"
   type        = string
   # default     = null
-  default = "14"
+  default = "15" # default to latest?
   # All available versions: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts
 }
 
@@ -523,7 +523,7 @@ variable "max_allocated_storage" {
 variable "ca_cert_identifier" {
   description = "Specifies the identifier of the CA certificate for the DB instance"
   type        = string
-  default     = null # Need to be specified?
+  default     = null
 }
 
 variable "delete_automated_backups" {
@@ -551,7 +551,7 @@ variable "enabled_cloudwatch_logs_exports" {
 variable "cloudwatch_log_group_retention_in_days" {
   description = "The number of days to retain CloudWatch logs for the DB instance"
   type        = number
-  default     = 7
+  default     = 1
 }
 
 variable "cloudwatch_log_group_kms_key_id" {
@@ -828,8 +828,6 @@ variable "proxy_engine_family" {
   }
 }
 
-# get inspiration from https://dev.azure.com/dfds/Phoenix/_git/aws-modules-rds?path=/variables.tf&version=GBmaster
-
 variable "rds_proxy_security_group_ids" { # TODO: remove
   type    = list(string)
   default = []
@@ -882,8 +880,3 @@ variable "kubernetes_namespace" {
   type        = string
   default     = null
 }
-
-
-# variable "stage" {
-#   type = string
-# }
