@@ -136,8 +136,3 @@ resource "aws_security_group" "rds_proxy_sg" { # TODO: add conditional to only c
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-
-# output "test" {
-#   value = module.rds_cluster_test.version
-# }
