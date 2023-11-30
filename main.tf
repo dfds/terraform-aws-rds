@@ -19,7 +19,7 @@ module "db_parameter_group" {
   name            = var.identifier
   use_name_prefix = var.parameter_group_use_name_prefix
   description     = var.parameter_group_description
-  family          = local.pramater_group_family
+  family          = local.parameter_group_family
   parameters      = local.instance_parameters
   tags            = merge(var.tags, var.db_parameter_group_tags)
 }
@@ -124,7 +124,7 @@ module "cluster_parameters" {
   source                                 = "./modules/cluster_parameter_group"
   count                                  = var.is_db_cluster ? 1 : 0
   db_cluster_parameter_group_name        = var.identifier
-  db_cluster_parameter_group_family      = local.pramater_group_family
+  db_cluster_parameter_group_family      = local.parameter_group_family
   db_cluster_parameter_group_description = "${var.identifier} DB parameter cluster group"
   db_cluster_parameter_group_parameters  = local.cluster_parameters
 }

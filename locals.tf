@@ -5,7 +5,8 @@ locals {
   ########################################################################
   create_db_parameter_group = true
   # parameter_group_name_id = local.create_db_parameter_group ? module.db_parameter_group.db_parameter_group_id : var.parameter_group_name
-  pramater_group_family = local.create_db_parameter_group && var.parameter_group_family == null ? "${var.engine}${var.major_engine_version}" : var.parameter_group_family
+  parameter_group_family = local.create_db_parameter_group && var.parameter_group_family == null ? "${var.engine}${var.major_engine_version}" : var.parameter_group_family
+
   instance_parameters = concat([
     {
       "name"         = "rds.force_ssl"
@@ -45,7 +46,7 @@ locals {
   # DB Proxy configuration
   ########################################################################
   proxy_name          = var.proxy_name == null ? "${var.identifier}" : var.proxy_name
-  db_proxy_secret_arn = (var.is_db_cluster || local.is_serverless) ? coalesce(try(module.db_multi_az_cluster[0].cluster_master_user_secret_arn, null), try(module.db_cluster_serverless[0].cluster_master_user_secret_arn, null)) : module.db_instance[0].db_instance_master_user_secret_arn
+  db_proxy_secret_arn = local.is_serverless ? try(module.db_cluster_serverless[0].cluster_master_user_secret_arn, null) : coalesce(module.db_instance[0].db_instance_master_user_secret_arn, null)
 
   proxy_auth_config = {
     (var.username) = {

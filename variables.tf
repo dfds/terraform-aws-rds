@@ -539,9 +539,16 @@ variable "network_type" {
 ################################################################################
 
 variable "enabled_cloudwatch_logs_exports" {
-  description = "List of log types to enable for exporting to CloudWatch logs. If omitted, no logs will be exported. Valid values (depending on engine): alert, audit, error, general, listener, slowquery, trace, postgresql (PostgreSQL), upgrade (PostgreSQL)"
+  description = "List of log types to enable for exporting to CloudWatch logs. If omitted, no logs will be exported. Valid values postgresql (PostgreSQL), upgrade (PostgreSQL)"
   type        = list(string)
   default     = []
+
+  validation {
+    condition = alltrue([
+      for s in var.enabled_cloudwatch_logs_exports : contains(["postgresql", "upgrade"], s)
+    ])
+    error_message = "value must be either postgresql or upgrade."
+  }
 }
 
 variable "cloudwatch_log_group_retention_in_days" {
