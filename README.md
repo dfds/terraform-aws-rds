@@ -15,6 +15,7 @@ Terraform module for AWS RDS instances
 
 | Name | Version |
 |------|---------|
+| <a name="provider_null"></a> [null](#provider\_null) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.1 |
 
 ## Modules
@@ -36,6 +37,7 @@ Terraform module for AWS RDS instances
 
 | Name | Type |
 |------|------|
+| [null_resource.validate_instance_type_proxy](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [random_id.snapshot_identifier](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 
 ## Inputs
@@ -70,7 +72,6 @@ Terraform module for AWS RDS instances
 | <a name="input_cluster_enable_global_write_forwarding"></a> [cluster\_enable\_global\_write\_forwarding](#input\_cluster\_enable\_global\_write\_forwarding) | Whether cluster should forward writes to an associated global cluster. Applied to secondary clusters to enable them to forward writes to an `aws_rds_global_cluster`'s primary cluster | `bool` | `null` | no |
 | <a name="input_cluster_enable_http_endpoint"></a> [cluster\_enable\_http\_endpoint](#input\_cluster\_enable\_http\_endpoint) | Enable HTTP endpoint (data API). Only valid when engine\_mode is set to `serverless` | `bool` | `null` | no |
 | <a name="input_cluster_endpoints"></a> [cluster\_endpoints](#input\_cluster\_endpoints) | Map of additional cluster endpoints and their attributes to be created | `any` | `{}` | no |
-| <a name="input_cluster_engine_mode"></a> [cluster\_engine\_mode](#input\_cluster\_engine\_mode) | The database engine mode. Valid values: `global`, `multimaster`, `parallelquery`, `provisioned`, `serverless`. Defaults to: `provisioned` | `string` | `"provisioned"` | no |
 | <a name="input_cluster_engine_native_audit_fields_included"></a> [cluster\_engine\_native\_audit\_fields\_included](#input\_cluster\_engine\_native\_audit\_fields\_included) | Specifies whether the database activity stream includes engine-native audit fields. This option only applies to an Oracle DB instance. By default, no engine-native audit fields are included | `bool` | `false` | no |
 | <a name="input_cluster_global_cluster_identifier"></a> [cluster\_global\_cluster\_identifier](#input\_cluster\_global\_cluster\_identifier) | The global cluster identifier specified on `aws_rds_global_cluster` | `string` | `null` | no |
 | <a name="input_cluster_iam_roles"></a> [cluster\_iam\_roles](#input\_cluster\_iam\_roles) | Map of IAM roles and supported feature names to associate with the cluster | `map(map(string))` | `{}` | no |
@@ -120,7 +121,7 @@ Terraform module for AWS RDS instances
 | <a name="input_identifier"></a> [identifier](#input\_identifier) | The name of the RDS instance | `string` | n/a | yes |
 | <a name="input_idle_client_timeout"></a> [idle\_client\_timeout](#input\_idle\_client\_timeout) | Idle client timeout of the RDS proxy (keep connection alive) | `number` | `1800` | no |
 | <a name="input_include_proxy"></a> [include\_proxy](#input\_include\_proxy) | Optionally include proxy to help manage database connections | `bool` | `false` | no |
-| <a name="input_instance_class"></a> [instance\_class](#input\_instance\_class) | The instance type of the RDS instance | `string` | n/a | yes |
+| <a name="input_instance_class"></a> [instance\_class](#input\_instance\_class) | The instance type of the RDS instance | `string` | `""` | no |
 | <a name="input_instance_parameters"></a> [instance\_parameters](#input\_instance\_parameters) | A list of DB parameters (map) to apply | `list(map(string))` | `[]` | no |
 | <a name="input_instance_use_identifier_prefix"></a> [instance\_use\_identifier\_prefix](#input\_instance\_use\_identifier\_prefix) | Determines whether to use `identifier` as is or create a unique identifier beginning with `identifier` as the specified prefix | `bool` | `false` | no |
 | <a name="input_iops"></a> [iops](#input\_iops) | The amount of provisioned IOPS. Setting this implies a storage\_type of 'io1' or `gp3`. See `notes` for limitations regarding this variable for `gp3` | `number` | `null` | no |
@@ -174,7 +175,7 @@ Terraform module for AWS RDS instances
 | <a name="input_timeouts"></a> [timeouts](#input\_timeouts) | Updated Terraform resource management timeouts. Applies to `aws_db_instance` in particular to permit resource management times | `map(string)` | `{}` | no |
 | <a name="input_timezone"></a> [timezone](#input\_timezone) | Time zone of the DB instance. timezone is currently only supported by Microsoft SQL Server. The timezone can only be set on creation. See MSSQL User Guide for more information | `string` | `null` | no |
 | <a name="input_username"></a> [username](#input\_username) | Username for the master DB user | `string` | `null` | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | } | `string` | `null` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | `null` | no |
 | <a name="input_vpc_security_group_ids"></a> [vpc\_security\_group\_ids](#input\_vpc\_security\_group\_ids) | List of VPC security groups to associate | `list(string)` | `[]` | no |
 
 ## Outputs
