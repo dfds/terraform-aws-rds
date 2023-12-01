@@ -43,7 +43,7 @@ module "rds_serverless_test" {
   ########################################################################
   # TODO: Fix this is not working with serverless atm because of missing IAM role.
   # See how it is implemented in the instance module
-  include_proxy = true
+  include_proxy = false
   ########################################################################
 
   engine_version               = "13"
