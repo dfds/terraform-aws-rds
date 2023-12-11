@@ -17,20 +17,20 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_BLUEPRINTS_QA_DEPLOY_AWS_SECRET_ACCESS_KEY }}
 
 jobs:
-  qa-env:
-    runs-on: ubuntu-latest
-    container:
-      image: dfdsdk/python-pipeline:0.0.4
-    steps:
-      # - name: Check environment variables
-      #   run: bash -c '[[ -z $AWS_ACCESS_KEY_ID || -z $AWS_SECRET_ACCESS_KEY ]] && exit 1 || true'
+  # qa-env:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: dfdsdk/python-pipeline:0.0.4
+  #   steps:
+  # - name: Check environment variables
+  #   run: bash -c '[[ -z $AWS_ACCESS_KEY_ID || -z $AWS_SECRET_ACCESS_KEY ]] && exit 1 || true'
 
-      # - name: Send alert if job fails
-      #   if: failure()
-      #   uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-      #   with:
-      #     slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
-      #     slack_message: Test environment variables failed.
+  # - name: Send alert if job fails
+  #   if: failure()
+  #   uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+  #   with:
+  #     slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+  #     slack_message: Test environment variables failed.
 
   qa-down:
     runs-on: ubuntu-latest
