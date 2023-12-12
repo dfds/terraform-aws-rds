@@ -435,11 +435,6 @@ variable "options" {
   default     = []
 }
 
-variable "create_db_instance" {
-  description = "Whether to create a database instance"
-  type        = bool
-  default     = true
-}
 
 variable "timezone" {
   description = "Time zone of the DB instance. timezone is currently only supported by Microsoft SQL Server. The timezone can only be set on creation. See MSSQL User Guide for more information"
