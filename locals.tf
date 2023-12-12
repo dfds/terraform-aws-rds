@@ -61,7 +61,7 @@ locals {
   is_serverless             = var.is_serverless                                               # temporary controlled by variable. TODO: Replace by calculation
   final_snapshot_identifier = var.skip_final_snapshot ? null : "${var.final_snapshot_identifier_prefix}-${var.identifier}-${try(random_id.snapshot_identifier[0].hex, "")}"
 
-  engine = "postgres"
+  engine = local.is_serverless ? "aurora-postgresql" : "postgres"
 
   config = {
     prod = {
@@ -84,7 +84,7 @@ locals {
       performance_insights_enabled          = false,
       performance_insights_retention_period = null,
       delete_automated_backups              = true
-      }
+    }
   }
 
   engine_version                        = var.engine_version != null ? var.engine_version : floor(data.aws_rds_engine_version.default.version)
