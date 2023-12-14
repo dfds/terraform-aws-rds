@@ -13,8 +13,7 @@ locals {
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
-    Example    = local.name
-    Repository = "https://github.com/dfds/aws-modules-rds"
+    "dfds.automation.tool" = "Terraform"
   }
 }
 
@@ -65,6 +64,7 @@ module "rds_instance_test" {
   cost_centre                  = "IT"
   data_classification          = "public"
   enable_default_backup        = true
+  optional_tags                = local.tags
 }
 
 ################################################################################
