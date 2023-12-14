@@ -842,7 +842,7 @@ variable "kubernetes_namespace" {
 
 
 ################################################################################
-# Tags
+# Resource tagging
 ################################################################################
 
 variable "resource_owner_contact_email" {
@@ -853,6 +853,7 @@ variable "resource_owner_contact_email" {
     error_message = "Invalid value for var.resource_owner_contact_email. Must be a valid email address."
   }
 }
+
 variable "cost_centre" {
   description = "Sets the dfds.cost_centre tag"
   type        = string
@@ -873,6 +874,7 @@ variable "additional_backup_retention" {
     error_message = "Invalid value for var.additional_backup_retention. Supported values: 30days, 60days, 180days, 1year, 10year."
   }
 }
+
 variable "data_classification" {
   description = "Sets the dfds.data.classification tag to the specified value. See recommendations here: https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy"
   type        = string
@@ -906,49 +908,3 @@ variable "optional_tags" {
   type        = map(string)
   default     = {}
 }
-
-# dfds_owner:  Identifies the owner of the resource	Required	Global (exc. AWS capabilities[3])	All	Should contain a contact email
-# dfds_env	Indicates the environment [dev, test, staging, uat, training, prod]	Required	Global	All	Helps manage resources in different environments
-# dfds_cost_centre	Identifies the cost center for resource allocation,	Required	Global	All	Format <BU-subunit>, e.g. ti-ferry
-# dfds_data_backup	Indicates whether this datastore should be included in a durable backup scheme [true, false]	Required for prod instances	Backup	Storage, Databases
-# dfds_data_backup_retention	Indicates the desired longevity of backups	Required for prod instances	Backup	Storage, Databases	Must be a known value, see next section
-# dfds_data_classification	Classifies data sensitivity [public, private, confidential, restricted]	Required for classification <> public	Data	Storage, Databases	Use when applicable.
-# dfds_service_availability	Indicates the mission criticality of the service [low, medium, high]	Required for prod instances	Global	All
-
-# Not all resources need same tags, like RDS needs dfds.data.backup
-# while the parameter group does not need
-
-# variable "tags" {
-#   description = "A mapping of tags to assign to all resources"
-#   type        = map(string)
-#   default     = {}
-# }
-
-# variable "db_instance_tags" {
-#   description = "Additional tags for the DB instance"
-#   type        = map(string)
-#   default     = {}
-# }
-
-# variable "db_option_group_tags" {
-#   description = "Additional tags for the DB option group"
-#   type        = map(string)
-#   default     = {}
-# }
-
-# variable "db_parameter_group_tags" {
-#   description = "Additional tags for the  DB parameter group"
-#   type        = map(string)
-#   default     = {}
-# }
-# variable "db_subnet_group_tags" {
-#   description = "Additional tags for the DB subnet group"
-#   type        = map(string)
-#   default     = {}
-# }
-
-# variable "cluster_tags" { # TODO: Do we need this?
-#   description = "A map of tags to add to only the cluster. Used for AWS Instance Scheduler tagging"
-#   type        = map(string)
-#   default     = {}
-# }

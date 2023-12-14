@@ -20,7 +20,7 @@ locals {
       value        = 1 # this might need to be changed back and forth to ensure apply_method is applied. See here: https://github.com/hashicorp/terraform-provider-aws/pull/24737
       apply_method = "immediate"
     }
-  ],
+    ],
     var.instance_parameters,
     local.prod_instance_parameters
   )
@@ -98,7 +98,6 @@ locals {
     }
   }
 
-  # engine_version                        = var.engine_version != null ? var.engine_version : floor(data.aws_rds_engine_version.default.version)
   engine_version                        = data.aws_rds_engine_version.engine_info.version
   is_major_engine_version               = try(length(regexall("\\.[0-9]+$", var.engine_version)) > 0, true) # For example, 15 is a major version, but 15.5 is not
   environment                           = var.environment == "prod" ? var.environment : "non-prod"
@@ -115,6 +114,10 @@ locals {
   performance_insights_retention_period = var.performance_insights_retention_period != null ? var.performance_insights_retention_period : local.default_config.performance_insights_retention_period
   delete_automated_backups              = var.delete_automated_backups != null ? var.delete_automated_backups : local.default_config.delete_automated_backups
   backup_retention_period               = var.backup_retention_period != null ? var.backup_retention_period : 0
+
+  ########################################################################
+  # Tagging
+  ########################################################################
   all_tags = merge({
     "dfds.owner" : var.resource_owner_contact_email,
     "dfds.env" : var.environment,

@@ -118,7 +118,7 @@ module "db_instance" {
   oidc_provider                         = var.oidc_provider
   kubernetes_namespace                  = var.kubernetes_namespace
   tags                                  = local.all_tags
-  rds_tags                              = local.data_tags # TODO: check inside module
+  rds_tags                              = local.data_tags
 }
 
 module "cluster_parameters" {
