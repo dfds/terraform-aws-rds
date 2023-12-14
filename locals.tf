@@ -104,4 +104,15 @@ locals {
   performance_insights_retention_period = var.performance_insights_retention_period != null ? var.performance_insights_retention_period : local.default_config.performance_insights_retention_period
   delete_automated_backups              = var.delete_automated_backups != null ? var.delete_automated_backups : local.default_config.delete_automated_backups
   backup_retention_period               = var.backup_retention_period != null ? var.backup_retention_period : 0
+  all_tags = merge({
+    "dfds.owner" : var.resource_owner_contact_email,
+    "dfds.env" : var.environment,
+    "dfds.cost.centre" : var.cost_centre,
+    "dfds.service.availability" : var.service_availability,
+  }, var.optional_tags)
+  data_backup_retention_tag = var.additional_backup_retention != "" ? { "dfds.data.backup.retention" : var.additional_backup_retention } : {}
+  data_tags = merge({
+    "dfds.data.backup" : var.enable_default_backup,
+    "dfds.data.classification" : var.data_classification,
+  }, var.optional_data_specific_tags, local.data_backup_retention_tag)
 }
