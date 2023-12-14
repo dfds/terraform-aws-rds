@@ -63,11 +63,10 @@ locals {
 
   engine = "postgres"
 
-  config = {
+  config = { # Environment Specific Values (Hard requirements)
     prod = {
       instance_class                        = "db.t3.micro",
       max_allocated_storage                 = 50,
-      port                                  = 5432,
       multi_az                              = true,
       skip_final_snapshot                   = false,
       performance_insights_enabled          = true,
@@ -77,8 +76,7 @@ locals {
     non-prod = {
       instance_class                        = "db.t3.micro",
       allocated_storage                     = 20,
-      max_allocated_storage                 = null
-      port                                  = 5432,
+      max_allocated_storage                 = null # no storage-auto-scaling
       multi_az                              = true,
       skip_final_snapshot                   = true,
       performance_insights_enabled          = false,
@@ -87,7 +85,6 @@ locals {
     }
   }
 
-  # engine_version                        = var.engine_version != null ? var.engine_version : floor(data.aws_rds_engine_version.default.version)
   engine_version                        = data.aws_rds_engine_version.engine_info.version
   is_major_engine_version               = try(length(regexall("\\.[0-9]+$", var.engine_version)) > 0, true) # For example, 15 is a major version, but 15.5 is not
   environment                           = var.environment == "prod" ? var.environment : "non-prod"
@@ -96,7 +93,7 @@ locals {
   allocated_storage                     = var.allocated_storage != null ? var.allocated_storage : local.default_config.allocated_storage
   max_allocated_storage                 = var.max_allocated_storage != null ? var.max_allocated_storage : local.default_config.max_allocated_storage
   password                              = var.manage_master_user_password ? null : var.password
-  port                                  = var.port != null ? var.port : local.default_config.port
+  port                                  = var.port
   db_subnet_group_name                  = var.create_db_subnet_group ? module.db_subnet_group[0].db_subnet_group_id : var.db_subnet_group_name ## TODO
   multi_az                              = var.multi_az != null ? var.multi_az : local.default_config.multi_az
   skip_final_snapshot                   = var.skip_final_snapshot != null ? var.skip_final_snapshot : local.default_config.skip_final_snapshot

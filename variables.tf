@@ -169,8 +169,11 @@ variable "master_user_secret_kms_key_id" {
 variable "port" {
   description = "The port on which the DB accepts connections"
   type        = string
-  # default     = null
-  default = "5432"
+  default     = "5432"
+  validation {
+    condition     = var.port == null
+    error_message = "This value cannot be null"
+  }
 }
 
 variable "vpc_security_group_ids" {
