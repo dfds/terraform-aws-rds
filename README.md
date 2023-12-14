@@ -93,7 +93,7 @@ Terraform module for AWS RDS instances
 | <a name="input_cluster_timeouts"></a> [cluster\_timeouts](#input\_cluster\_timeouts) | Create, update, and delete timeout configurations for the cluster | `map(string)` | `{}` | no |
 | <a name="input_cluster_use_name_prefix"></a> [cluster\_use\_name\_prefix](#input\_cluster\_use\_name\_prefix) | Whether to use `name` as a prefix for the cluster | `bool` | `false` | no |
 | <a name="input_copy_tags_to_snapshot"></a> [copy\_tags\_to\_snapshot](#input\_copy\_tags\_to\_snapshot) | On delete, copy all Instance tags to the final snapshot | `bool` | `false` | no |
-| <a name="input_cost_centre"></a> [cost\_centre](#input\_cost\_centre) | Sets the dfds.cost\_centre tag | `string` | n/a | yes |
+| <a name="input_cost_centre"></a> [cost\_centre](#input\_cost\_centre) | Sets the dfds.cost\_centre tag. See recommendations here: https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy | `string` | n/a | yes |
 | <a name="input_create_db_cluster_activity_stream"></a> [create\_db\_cluster\_activity\_stream](#input\_create\_db\_cluster\_activity\_stream) | Determines whether a cluster activity stream is created. | `bool` | `false` | no |
 | <a name="input_create_db_instance"></a> [create\_db\_instance](#input\_create\_db\_instance) | Whether to create a database instance | `bool` | `true` | no |
 | <a name="input_create_db_option_group"></a> [create\_db\_option\_group](#input\_create\_db\_option\_group) | Create a database option group | `bool` | `true` | no |
