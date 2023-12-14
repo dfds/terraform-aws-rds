@@ -855,7 +855,7 @@ variable "resource_owner_contact_email" {
 }
 
 variable "cost_centre" {
-  description = "Sets the dfds.cost_centre tag"
+  description = "Sets the dfds.cost_centre tag. See recommendations here: https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy"
   type        = string
 }
 

@@ -60,8 +60,8 @@ module "rds_instance_test" {
   }
   environment                  = "dev"
   service_availability         = "low"
-  resource_owner_contact_email = "ITBuildSource@dfds.com"
-  cost_centre                  = "IT"
+  resource_owner_contact_email = "example@dfds.com"
+  cost_centre                  = "buarch-d"
   data_classification          = "public"
   enable_default_backup        = true
   optional_tags                = local.tags
