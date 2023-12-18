@@ -283,18 +283,6 @@ variable "blue_green_update" {
   default     = {}
 }
 
-variable "backup_retention_period" { # TODO: Delete
-  description = "The days to retain backups for"
-  type        = number
-  default     = null
-}
-
-variable "backup_window" { # TODO: Delete
-  description = "The daily time range (in UTC) during which automated backups are created if they are enabled. Example: '09:46-10:16'. Must not overlap with maintenance_window"
-  type        = string
-  default     = null
-}
-
 variable "restore_to_point_in_time" {
   description = "Restore to a point in time (MySQL is NOT supported)"
   type        = map(string)
