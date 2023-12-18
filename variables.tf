@@ -273,6 +273,10 @@ variable "maintenance_window" { # TODO: Need validation. Use regex?
   description = "The window to perform maintenance in. Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'"
   type        = string
   default     = "Sat:18:00-Sat:20:00" # This is adjusted in accordance with AWS Backup schedule, see info here: https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started
+  validation {
+    condition     = can(regex("^([a-zA-Z]{3}):([0-2][0-9]):([0-5][0-9])-([a-zA-Z]{3}):([0-2][0-9]):([0-5][0-9])$", var.maintenance_window))
+    error_message = "Maintenance window must be in the format 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'"
+  }
 }
 # Continuous backup takes place between 8 PM and 5 AM UTC.
 # Snapshot backups take place between 3 AM and 7 AM UTC.
