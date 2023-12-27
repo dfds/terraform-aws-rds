@@ -184,7 +184,7 @@ variable "availability_zone" {
   default     = null
 }
 
-variable "multi_az" {
+variable "instance_is_multi_az" {
   description = "Specifies if the RDS instance is multi-AZ"
   type        = bool
   default     = null
