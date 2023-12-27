@@ -60,17 +60,17 @@ variable "replicate_source_db" {
   default     = null
 }
 
-variable "license_model" {
-  description = "License model information for this DB instance. Optional, but required for some DB engines, i.e. Oracle SE1"
-  type        = string
-  default     = null
-}
+# variable "license_model" { # TODO: Remove. It's Oracle specific
+#   description = "License model information for this DB instance. Optional, but required for some DB engines, i.e. Oracle SE1"
+#   type        = string
+#   default     = null
+# }
 
-variable "replica_mode" {
-  description = "Specifies whether the replica is in either mounted or open-read-only mode. This attribute is only supported by Oracle instances. Oracle replicas operate in open-read-only mode unless otherwise specified"
-  type        = string
-  default     = null
-}
+# variable "replica_mode" { # TODO: Remove. It's Oracle specific
+#   description = "Specifies whether the replica is in either mounted or open-read-only mode. This attribute is only supported by Oracle instances. Oracle replicas operate in open-read-only mode unless otherwise specified"
+#   type        = string
+#   default     = null
+# }
 
 variable "iam_database_authentication_enabled" {
   description = "Specifies whether or not the mappings of AWS Identity and Access Management (IAM) accounts to database accounts are enabled"
@@ -292,7 +292,7 @@ variable "restore_to_point_in_time" {
   default     = null
 }
 
-variable "s3_import" {
+variable "s3_import" { # TODO: Remove if only MySQL is supported
   description = "Restore from a Percona Xtrabackup in S3 (only MySQL is supported)"
   type        = map(string)
   default     = null
@@ -328,75 +328,77 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-# DB parameter group
-variable "create_db_parameter_group" { # Test this
-  description = "Whether to create a database parameter group"
-  type        = bool
-  default     = true
-}
+# # DB parameter group
+# variable "create_db_parameter_group" { # Test this
+#   description = "Whether to create a database parameter group"
+#   type        = bool
+#   default     = true
+# }
 
-variable "parameter_group_name" {
-  description = "Name of the DB parameter group to associate or create"
-  type        = string
-  default     = null
-}
+# variable "parameter_group_name" {
+#   description = "Name of the DB parameter group to associate or create"
+#   type        = string
+#   default     = null
+# }
 
+# TODO: Convert to local
 variable "parameter_group_use_name_prefix" { # It is good to have default value as true in case of upgrades as it results in new parameter group to be created with new engine version
   description = "Determines whether to use `parameter_group_name` as is or create a unique name beginning with the `parameter_group_name` as the prefix"
   type        = bool
   default     = true
 }
 
+# TODO: Convert to local
 variable "parameter_group_description" {
   description = "Description of the DB parameter group to create"
   type        = string
   default     = null
 }
 
-variable "parameter_group_family" {
-  description = "The family of the DB parameter group"
-  type        = string
-  default     = null # varies depending on engine and version and instance type
-}
+# variable "parameter_group_family" {
+#   description = "The family of the DB parameter group"
+#   type        = string
+#   default     = null # varies depending on engine and version and instance type
+# }
 
 variable "instance_parameters" {
-  description = "A list of DB parameters (map) to apply"
+  description = "A list of DB parameters (map) to modify"
   type        = list(map(string))
   default     = []
 }
 
-# DB option group
-variable "create_db_option_group" {
-  description = "Create a database option group"
-  type        = bool
-  default     = true
-}
+# # DB option group # Not used by Postgres
+# variable "create_db_option_group" {
+#   description = "Create a database option group"
+#   type        = bool
+#   default     = true
+# }
 
-variable "option_group_name" {
-  description = "Name of the option group"
-  type        = string
-  default     = null
-}
+# variable "option_group_name" {
+#   description = "Name of the option group"
+#   type        = string
+#   default     = null
+# }
 
-variable "option_group_use_name_prefix" {
-  description = "Determines whether to use `option_group_name` as is or create a unique name beginning with the `option_group_name` as the prefix"
-  type        = bool
-  default     = true
-}
+# variable "option_group_use_name_prefix" {
+#   description = "Determines whether to use `option_group_name` as is or create a unique name beginning with the `option_group_name` as the prefix"
+#   type        = bool
+#   default     = true
+# }
 
-variable "option_group_description" {
-  description = "The description of the option group"
-  type        = string
-  default     = null
-}
+# variable "option_group_description" {
+#   description = "The description of the option group"
+#   type        = string
+#   default     = null
+# }
 
-variable "options" {
-  description = "A list of Options to apply"
-  type        = any
-  default     = []
-}
+# variable "options" {
+#   description = "A list of Options to apply"
+#   type        = any
+#   default     = []
+# }
 
-variable "create_db_instance" {
+variable "create_db_instance" { # TODO: Remove
   description = "Whether to create a database instance"
   type        = bool
   default     = true
@@ -736,20 +738,22 @@ variable "cluster_engine_native_audit_fields_included" {
 # Proxy settings
 ################################################################################
 
-variable "include_proxy" {
+variable "is_proxy_included" {
   description = "Optionally include proxy to help manage database connections"
   type        = bool
   default     = false
 }
 
-variable "proxy_debug_logging" {
+variable "proxy_debug_logging_is_enabled" {
   description = "Turn on debug logging for the proxy"
   default     = false
+  type        = bool
 }
 
-variable "idle_client_timeout" {
+variable "proxy_idle_client_timeout" {
   description = "Idle client timeout of the RDS proxy (keep connection alive)"
   default     = 1800
+  type        = number
 }
 
 variable "proxy_require_tls" {
@@ -784,12 +788,12 @@ variable "proxy_security_group_rules" {
   }
 }
 
-variable "rds_proxy_iam_auth" {
+variable "proxy_iam_auth" {
   type    = string
   default = "DISABLED"
   validation {
-    condition     = contains(["DISABLED", "REQUIRED"], var.rds_proxy_iam_auth)
-    error_message = "Invalid value for var.rds_proxy_iam_auth. Supported values: DISABLED, REQUIRED."
+    condition     = contains(["DISABLED", "REQUIRED"], var.proxy_iam_auth)
+    error_message = "Invalid value for var.proxy_iam_auth. Supported values: DISABLED, REQUIRED."
   }
 }
 
@@ -821,7 +825,7 @@ variable "rds_security_group_rules" {
 
 
 variable "is_kubernetes_app_enabled" {
-  description = "Determines whether to create needed resources to enable access from Kubernetes"
+  description = "Determines whether to create needed resources to enable access from Kubernetes. Set this to `true` if you want to access the RDS instance from Kubernetes pods"
   type        = bool
   default     = false
 }

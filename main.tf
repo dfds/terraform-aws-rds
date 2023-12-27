@@ -13,7 +13,7 @@ resource "random_id" "snapshot_identifier" {
 }
 
 resource "null_resource" "validate_instance_type_proxy" { # TODO: need to enforce dependency in proxy module
-  count = var.is_db_cluster && var.include_proxy ? 1 : 0
+  count = var.is_db_cluster && var.is_proxy_included ? 1 : 0
 
   provisioner "local-exec" {
     command = "Running a check"
@@ -21,7 +21,7 @@ resource "null_resource" "validate_instance_type_proxy" { # TODO: need to enforc
 
   lifecycle {
     precondition {
-      condition     = var.is_db_cluster && var.include_proxy
+      condition     = var.is_db_cluster && var.is_proxy_included
       error_message = "Cannot create a proxy for a DB cluster"
     }
   }
@@ -32,8 +32,8 @@ module "db_parameter_group" {
   source          = "./modules/instance_parameter_group"
   count           = local.create_db_parameter_group ? 1 : 0
   name            = var.identifier
-  use_name_prefix = var.parameter_group_use_name_prefix
-  description     = var.parameter_group_description
+  use_name_prefix = var.parameter_group_use_name_prefix # TODO: Convert to local
+  description     = var.parameter_group_description     # TODO: Convert to local
   family          = local.parameter_group_family
   parameters      = local.instance_parameters
   tags            = local.all_tags
@@ -158,7 +158,7 @@ module "db_multi_az_cluster" {
 }
 
 
-module "db_cluster_serverless" { # TODO: Revisit defaults
+module "db_cluster_serverless" { # TODO: Revisit defaults and rename to aurora serverless
   source                      = "./modules/rds_aurora"
   count                       = local.is_serverless ? 1 : 0
   name                        = var.identifier
@@ -188,13 +188,13 @@ module "db_cluster_serverless" { # TODO: Revisit defaults
 
 module "db_proxy" {
   source                                = "./modules/rds_proxy"
-  count                                 = var.include_proxy ? 1 : 0
+  count                                 = var.is_proxy_included ? 1 : 0
   tags                                  = local.all_tags
   name                                  = var.identifier
   auth                                  = local.proxy_auth_config
-  debug_logging                         = var.proxy_debug_logging
+  debug_logging                         = var.proxy_debug_logging_is_enabled
   engine_family                         = var.proxy_engine_family
-  idle_client_timeout                   = var.idle_client_timeout
+  idle_client_timeout                   = var.proxy_idle_client_timeout
   require_tls                           = var.proxy_require_tls
   role_arn                              = try(module.db_instance[0].iam_role_for_aws_services.arn, module.db_cluster_serverless[0].iam_role_for_aws_services.arn, null) # TODO: Fix iam_role_for_aws_services for db_cluster_serverless by adding required IAM resources
   vpc_security_group_ids                = [module.security_group_proxy[0].security_group_id]
@@ -230,7 +230,7 @@ module "security_group" { # TODO: update with another rule for public access
 
 module "security_group_proxy" {
   source                   = "./modules/security_group"
-  count                    = var.include_proxy ? 1 : 0
+  count                    = var.is_proxy_included ? 1 : 0
   name                     = var.identifier
   description              = "RDS PostgreSQL security group for proxy"
   vpc_id                   = var.vpc_id

@@ -36,7 +36,7 @@ locals {
   ########################################################################
   # Subnet group
   ########################################################################
-  create_db_subnet_group = true
+  # create_db_subnet_group = true
 
   ########################################################################
   # Enhanced Monitoring
@@ -54,12 +54,12 @@ locals {
   # DB Proxy configuration
   ########################################################################
   proxy_name          = var.proxy_name == null ? "${var.identifier}" : var.proxy_name
-  db_proxy_secret_arn = var.include_proxy ? (local.is_serverless ? try(module.db_cluster_serverless[0].cluster_master_user_secret_arn, null) : try(module.db_instance[0].db_instance_master_user_secret_arn, null)) : null
-  proxy_auth_config = var.include_proxy ? {
+  db_proxy_secret_arn = var.is_proxy_included ? (local.is_serverless ? try(module.db_cluster_serverless[0].cluster_master_user_secret_arn, null) : try(module.db_instance[0].db_instance_master_user_secret_arn, null)) : null
+  proxy_auth_config = var.is_proxy_included ? {
     (var.username) = {
       description = "Proxy user for ${var.username}"
       secret_arn  = local.db_proxy_secret_arn # aws_secretsmanager_secret.superuser.arn
-      iam_auth    = var.rds_proxy_iam_auth
+      iam_auth    = var.proxy_iam_auth
     }
   } : {}
 
