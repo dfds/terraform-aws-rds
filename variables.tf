@@ -77,25 +77,23 @@ EOF
 }
 
 variable "iam_database_authentication_enabled" {
-  description = "Specifies whether or not the mappings of AWS Identity and Access Management (IAM) accounts to database accounts are enabled"
+  description = <<EOF
+    Set this to true to enable authentication using IAM.
+    Valid Values: .
+    Notes: This requires creating mappings between IAM users/roles and database accounts in the RDS instance for this to work properly.
+EOF
   type        = bool
   default     = false
 }
 
-variable "domain" {
-  description = "The ID of the Directory Service Active Directory domain to create the instance in"
-  type        = string
-  default     = null
-}
-
-variable "domain_iam_role_name" {
-  description = "(Required if domain is provided) The name of the IAM role to be used when making API calls to the Directory Service"
-  type        = string
-  default     = null
-}
-
 variable "engine_version" {
-  description = "The engine version to use. If not specified the preffered version will be used. It is also possible to pass major version in this format \"15\". Note: that a specific version must be valid and this can be obtained from this documentation: https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html"
+  description = <<EOF
+    Specify engine version to use.
+    Valid Values: Specific version number, for example, "15.3" or major version number, for example, "15".
+    Notes:
+      If not specified the preffered version will be used.
+      The specific version must be valid and this can be obtained from this [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html)
+EOF
   type        = string
   default     = null
 }
