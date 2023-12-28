@@ -23,7 +23,7 @@ module "rds_instance_test" { # TODO: change to only use defaults and required va
   environment                            = "test"
   instance_class                         = "db.t3.micro"
   db_name                                = "qadb"
-  multi_az                               = true
+  instance_is_multi_az                   = true
   username                               = "qa_user"
   manage_master_user_password            = true
   iam_database_authentication_enabled    = true

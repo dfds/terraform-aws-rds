@@ -13,7 +13,7 @@ resource "random_id" "snapshot_identifier" {
 }
 
 resource "null_resource" "validate_instance_type_proxy" { # TODO: need to enforce dependency in proxy module
-  count = var.is_db_cluster && var.is_proxy_included ? 1 : 0
+  count = var.is_cluster && var.is_proxy_included ? 1 : 0
 
   provisioner "local-exec" {
     command = "Running a check"
@@ -21,7 +21,7 @@ resource "null_resource" "validate_instance_type_proxy" { # TODO: need to enforc
 
   lifecycle {
     precondition {
-      condition     = var.is_db_cluster && var.is_proxy_included
+      condition     = var.is_cluster && var.is_proxy_included
       error_message = "Cannot create a proxy for a DB cluster"
     }
   }
@@ -74,7 +74,7 @@ module "db_instance" {
   source                                = "./modules/rds_instance"
   count                                 = var.create_db_instance ? 1 : 0
   identifier                            = var.identifier
-  use_identifier_prefix                 = var.instance_use_identifier_prefix
+  use_identifier_prefix                 = false
   engine                                = local.engine
   engine_version                        = local.engine_version
   instance_class                        = local.instance_class
@@ -93,7 +93,7 @@ module "db_instance" {
   parameter_group_name                  = module.db_parameter_group[0].db_parameter_group_id
   network_type                          = var.network_type
   availability_zone                     = var.availability_zone
-  multi_az                              = local.multi_az
+  multi_az                              = local.instance_is_multi_az
   iops                                  = var.iops
   storage_throughput                    = var.storage_throughput
   publicly_accessible                   = var.publicly_accessible
@@ -124,7 +124,7 @@ module "db_instance" {
 
 module "cluster_parameters" {
   source                                 = "./modules/cluster_parameter_group"
-  count                                  = var.is_db_cluster ? 1 : 0
+  count                                  = var.is_cluster ? 1 : 0
   db_cluster_parameter_group_name        = var.identifier
   db_cluster_parameter_group_family      = local.parameter_group_family
   db_cluster_parameter_group_description = "${var.identifier} DB parameter cluster group"
@@ -133,7 +133,7 @@ module "cluster_parameters" {
 
 module "db_multi_az_cluster" {
   source                          = "./modules/rds_aurora"
-  count                           = var.is_db_cluster && !local.is_serverless ? 1 : 0
+  count                           = var.is_cluster && !local.is_serverless ? 1 : 0
   name                            = var.identifier
   cluster_use_name_prefix         = var.cluster_use_name_prefix
   engine                          = local.engine
@@ -205,8 +205,8 @@ module "db_proxy" {
   max_connections_percent               = 100
   max_idle_connections_percent          = 50
   session_pinning_filters               = ["EXCLUDE_VARIABLE_SETS"]
-  target_db_instance                    = !var.is_db_cluster
-  target_db_cluster                     = var.is_db_cluster
+  target_db_instance                    = !var.is_cluster
+  target_db_cluster                     = var.is_cluster
   db_instance_identifier                = var.identifier
   db_cluster_identifier                 = var.identifier
   endpoints                             = {}

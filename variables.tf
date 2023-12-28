@@ -3,9 +3,18 @@
 ################################################################################
 # Instance specific variables - applicable to cluster instances as well
 ################################################################################
+variable "is_instance" {
+  default = true
+}
+
 
 variable "environment" {
-  description = "The environment"
+  description = <<EOF
+    Specify the staging environment. The value may set configuration defaults according to the policies.
+    Valid Values: "dev", "test", "staging", "uat", "training", "prod".
+    Valid Format: .
+    Notes: .
+EOF
   type        = string
   validation {
     condition     = contains(["dev", "test", "staging", "uat", "training", "prod"], var.environment)
@@ -14,30 +23,50 @@ variable "environment" {
 }
 
 variable "identifier" {
-  description = "The name of the RDS instance"
+  description = <<EOF
+    Specify the name of the RDS instance to deploy.
+    Valid Values: .
+    Valid Format: .
+    Notes: .
+EOF
   type        = string
 }
 
-variable "instance_use_identifier_prefix" {
-  description = "Determines whether to use `identifier` as is or create a unique identifier beginning with `identifier` as the specified prefix"
-  type        = bool
-  default     = false
-}
+# variable "instance_use_identifier_prefix" {
+#   description = "Determines whether to use `identifier` as is or create a unique identifier beginning with `identifier` as the specified prefix"
+#   type        = bool
+#   default     = false
+# }
 
 variable "allocated_storage" {
-  description = "The allocated storage in gigabytes"
+  description = <<EOF
+    Specify the allocated storage in gigabytes.
+    Valid Values: .
+    Valid Format: .
+    Notes: .
+EOF
   type        = number
   default     = null
 }
 
 variable "storage_type" {
-  description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD). The default is 'io1' if iops is specified, 'gp2' if not. If you specify 'io1' or 'gp3' , you must also include a value for the 'iops' parameter"
+  description = <<EOF
+    Specify the storage type.
+    Valid Values: One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD).
+    Valid Format: .
+    Notes: Default is 'io1' if iops is specified, 'gp2' if not. If you specify 'io1' or 'gp3' , you must also include a value for the 'iops' parameter
+EOF
   type        = string
   default     = "gp3"
 }
 
 variable "storage_throughput" {
-  description = "Storage throughput value for the DB instance. See `notes` for limitations regarding this variable for `gp3`"
+  description = <<EOF
+    Storage throughput value for the DB instance. See `notes` for limitations regarding this variable for `gp3`
+    Valid Values: .
+    Valid Format: .
+    Notes: .
+EOF
   type        = number
   default     = null
 }
@@ -268,7 +297,7 @@ variable "apply_immediately" {
   default     = false
 }
 
-variable "maintenance_window" { # TODO: Need validation. Use regex?
+variable "maintenance_window" {
   description = "The window to perform maintenance in. Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'"
   type        = string
   default     = "Sat:18:00-Sat:20:00" # This is adjusted in accordance with AWS Backup schedule, see info here: https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started
@@ -521,12 +550,12 @@ variable "cloudwatch_log_group_skip_destroy_on_deletion" {
 # Cluster specific variables
 ################################################################################
 
-variable "is_db_cluster" {
+variable "is_cluster" {
   type    = bool
   default = false
 }
 
-variable "cluster_is_primary_cluster" {
+variable "cluster_is_primary_cluster" { # TODO: Remove if not needed
   description = "Determines whether cluster is primary cluster with writer instance (set to `false` for global cluster and replica clusters)"
   type        = bool
   default     = true
@@ -860,7 +889,7 @@ variable "additional_backup_retention" {
   type        = string
   default     = ""
   validation {
-    condition     = contains(["", "30days", "60days", "180days", "1year", "10year"], var.additional_backup_retention)
+    condition     = contains(["", "30days", "60days", "180days", "1year", "10year"], var.additional_backup_retention) # TODO: Test enabling null option as with resource_owner_contact_email
     error_message = "Invalid value for var.additional_backup_retention. Supported values: 30days, 60days, 180days, 1year, 10year."
   }
 }

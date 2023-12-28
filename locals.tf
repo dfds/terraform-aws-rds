@@ -79,7 +79,7 @@ locals {
       allocated_storage                     = 20,
       max_allocated_storage                 = 50,
       port                                  = 5432,
-      multi_az                              = true,
+      instance_is_multi_az                  = true,
       skip_final_snapshot                   = false,
       performance_insights_enabled          = true,
       performance_insights_retention_period = 7,
@@ -90,7 +90,7 @@ locals {
       allocated_storage                     = 20,
       max_allocated_storage                 = null
       port                                  = 5432,
-      multi_az                              = false,
+      instance_is_multi_az                  = false,
       skip_final_snapshot                   = true,
       performance_insights_enabled          = false,
       performance_insights_retention_period = null,
@@ -108,7 +108,7 @@ locals {
   password                              = var.manage_master_user_password ? null : var.password
   port                                  = var.port != null ? var.port : local.default_config.port
   db_subnet_group_name                  = var.create_db_subnet_group ? module.db_subnet_group[0].db_subnet_group_id : var.db_subnet_group_name ## TODO
-  multi_az                              = var.multi_az != null ? var.multi_az : local.default_config.multi_az
+  instance_is_multi_az                  = var.instance_is_multi_az != null ? var.instance_is_multi_az : local.default_config.instance_is_multi_az
   skip_final_snapshot                   = var.skip_final_snapshot != null ? var.skip_final_snapshot : local.default_config.skip_final_snapshot
   performance_insights_enabled          = var.performance_insights_enabled != null ? var.performance_insights_enabled : local.default_config.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_retention_period != null ? var.performance_insights_retention_period : local.default_config.performance_insights_retention_period
