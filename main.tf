@@ -81,7 +81,7 @@ module "db_instance" {
   allocated_storage                     = local.allocated_storage
   max_allocated_storage                 = local.max_allocated_storage
   storage_type                          = var.storage_type
-  storage_encrypted                     = true
+  storage_encrypted                     = local.storage_encrypted
   db_name                               = var.db_name
   username                              = var.username
   password                              = local.password
@@ -148,7 +148,7 @@ module "db_multi_az_cluster" {
   master_password                 = local.password
   manage_master_user_password     = var.manage_master_user_password
   apply_immediately               = var.apply_immediately
-  storage_encrypted               = var.storage_encrypted
+  storage_encrypted               = local.storage_encrypted
   db_cluster_parameter_group_name = module.cluster_parameters[0].db_cluster_parameter_group_id
   vpc_security_group_ids          = var.vpc_security_group_ids
   skip_final_snapshot             = var.skip_final_snapshot
@@ -165,7 +165,7 @@ module "db_cluster_serverless" { # TODO: Revisit defaults and rename to aurora s
   engine                      = "aurora-postgresql"
   engine_mode                 = "provisioned"
   engine_version              = local.engine_version
-  storage_encrypted           = var.storage_encrypted
+  storage_encrypted           = local.storage_encrypted
   master_username             = var.username
   manage_master_user_password = var.manage_master_user_password
   db_subnet_group_name        = local.db_subnet_group_name

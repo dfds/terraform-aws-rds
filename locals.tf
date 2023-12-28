@@ -115,6 +115,7 @@ locals {
   delete_automated_backups              = var.delete_automated_backups != null ? var.delete_automated_backups : local.default_config.delete_automated_backups
   backup_retention_period               = null
   backup_window                         = null
+  storage_encrypted                     = true
 
   ########################################################################
   # Tagging

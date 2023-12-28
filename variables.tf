@@ -10,15 +10,14 @@ variable "is_instance" {
 
 variable "environment" {
   description = <<EOF
-    Specify the staging environment. The value may set configuration defaults according to the policies.
+    Specify the staging environment.
     Valid Values: "dev", "test", "staging", "uat", "training", "prod".
-    Valid Format: .
-    Notes: .
+    Notes: The value will set configuration defaults according to DFDS policies.
 EOF
   type        = string
   validation {
     condition     = contains(["dev", "test", "staging", "uat", "training", "prod"], var.environment)
-    error_message = "Valid values for environment are: dev, test,staging, uat, training, prod."
+    error_message = "Valid values for environment are: dev, test, staging, uat, training, prod."
   }
 }
 
@@ -26,7 +25,6 @@ variable "identifier" {
   description = <<EOF
     Specify the name of the RDS instance to deploy.
     Valid Values: .
-    Valid Format: .
     Notes: .
 EOF
   type        = string
@@ -42,7 +40,6 @@ variable "allocated_storage" {
   description = <<EOF
     Specify the allocated storage in gigabytes.
     Valid Values: .
-    Valid Format: .
     Notes: .
 EOF
   type        = number
@@ -53,53 +50,31 @@ variable "storage_type" {
   description = <<EOF
     Specify the storage type.
     Valid Values: One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD).
-    Valid Format: .
     Notes: Default is 'io1' if iops is specified, 'gp2' if not. If you specify 'io1' or 'gp3' , you must also include a value for the 'iops' parameter
 EOF
   type        = string
   default     = "gp3"
 }
 
-variable "storage_throughput" {
+variable "storage_throughput" { # TODO: What is See `notes`?
   description = <<EOF
-    Storage throughput value for the DB instance. See `notes` for limitations regarding this variable for `gp3`
+    Speficy storage throughput value for the DB instance.
     Valid Values: .
-    Valid Format: .
-    Notes: .
+    Notes: See `notes` for limitations regarding this variable for `gp3`.
 EOF
   type        = number
   default     = null
 }
 
-variable "storage_encrypted" {
-  description = "Specifies whether the DB instance is encrypted"
-  type        = bool
-  default     = true
-}
-
-variable "kms_key_id" {
-  description = "The ARN for the KMS encryption key. If creating an encrypted replica, set this to the destination KMS ARN. If storage_encrypted is set to true and kms_key_id is not specified the default KMS key created in your account will be used. Be sure to use the full ARN, not a key alias."
+variable "replicate_source_db" { # TODO: Consider providing abstraction to this
+  description = <<EOF
+    Inidicate that this resource is a Replicate database, and to use this value as the source database.
+    Valid Values: The identifier of another Amazon RDS Database to replicate in the same region.
+    Notes: In case of cross-region replication, specify the ARN of the source DB instance.
+EOF
   type        = string
   default     = null
 }
-
-variable "replicate_source_db" {
-  description = "Specifies that this resource is a Replicate database, and to use this value as the source database. This correlates to the identifier of another Amazon RDS Database to replicate"
-  type        = string
-  default     = null
-}
-
-# variable "license_model" { # TODO: Remove. It's Oracle specific
-#   description = "License model information for this DB instance. Optional, but required for some DB engines, i.e. Oracle SE1"
-#   type        = string
-#   default     = null
-# }
-
-# variable "replica_mode" { # TODO: Remove. It's Oracle specific
-#   description = "Specifies whether the replica is in either mounted or open-read-only mode. This attribute is only supported by Oracle instances. Oracle replicas operate in open-read-only mode unless otherwise specified"
-#   type        = string
-#   default     = null
-# }
 
 variable "iam_database_authentication_enabled" {
   description = "Specifies whether or not the mappings of AWS Identity and Access Management (IAM) accounts to database accounts are enabled"
