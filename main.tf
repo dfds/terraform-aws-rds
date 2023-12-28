@@ -32,8 +32,7 @@ module "db_parameter_group" {
   source          = "./modules/instance_parameter_group"
   count           = local.create_db_parameter_group ? 1 : 0
   name            = var.identifier
-  use_name_prefix = var.parameter_group_use_name_prefix # TODO: Convert to local
-  description     = var.parameter_group_description     # TODO: Convert to local
+  use_name_prefix = local.parameter_group_use_name_prefix
   family          = local.parameter_group_family
   parameters      = local.instance_parameters
   tags            = local.all_tags
@@ -41,10 +40,10 @@ module "db_parameter_group" {
 
 module "db_subnet_group" {
   source          = "./modules/rds_subnet_group"
-  count           = var.create_db_subnet_group ? 1 : 0
-  name            = coalesce(var.db_subnet_group_name, var.identifier)
-  use_name_prefix = var.db_subnet_group_use_name_prefix
-  description     = var.db_subnet_group_description
+  count           = local.create_db_subnet_group ? 1 : 0
+  name            = var.identifier
+  use_name_prefix = local.db_subnet_group_use_name_prefix
+  description     = local.db_subnet_group_description
   subnet_ids      = var.subnet_ids
   tags            = local.all_tags
 }
@@ -64,9 +63,9 @@ module "enhanced_monitoring_iam_role" {
   source                               = "./modules/enhanced_monitoring_role"
   count                                = local.create_monitoring_role ? 1 : 0
   monitoring_role_name                 = local.monitoring_role_name
-  monitoring_role_use_name_prefix      = var.enhanced_monitoring_role_use_name_prefix
+  monitoring_role_use_name_prefix      = local.enhanced_monitoring_role_use_name_prefix
   monitoring_role_description          = local.monitoring_role_description
-  monitoring_role_permissions_boundary = var.enhanced_monitoring_role_permissions_boundary
+  monitoring_role_permissions_boundary = local.enhanced_monitoring_role_permissions_boundary
   tags                                 = local.all_tags
 }
 
@@ -150,7 +149,7 @@ module "db_multi_az_cluster" {
   apply_immediately               = var.apply_immediately
   storage_encrypted               = local.storage_encrypted
   db_cluster_parameter_group_name = module.cluster_parameters[0].db_cluster_parameter_group_id
-  vpc_security_group_ids          = var.vpc_security_group_ids
+  vpc_security_group_ids          = [module.security_group.security_group_id]
   skip_final_snapshot             = var.skip_final_snapshot
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   tags                            = local.all_tags # might also need to add rds_tags
@@ -169,7 +168,7 @@ module "db_cluster_serverless" { # TODO: Revisit defaults and rename to aurora s
   master_username             = var.username
   manage_master_user_password = var.manage_master_user_password
   db_subnet_group_name        = local.db_subnet_group_name
-  vpc_security_group_ids      = var.vpc_security_group_ids
+  vpc_security_group_ids      = [module.security_group.security_group_id]
   monitoring_interval         = var.enhanced_monitoring_interval
   monitoring_role_arn         = local.monitoring_role_arn
   apply_immediately           = var.apply_immediately

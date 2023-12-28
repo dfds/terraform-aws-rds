@@ -23,7 +23,7 @@ EOF
 
 variable "identifier" {
   description = <<EOF
-    Specify the name of the RDS instance to deploy.
+    Specify the name of the RDS instance to create.
     Valid Values: .
     Notes: .
 EOF
@@ -91,39 +91,61 @@ variable "engine_version" {
     Specify engine version to use.
     Valid Values: Specific version number, for example, "15.3" or major version number, for example, "15".
     Notes:
-      If not specified the preffered version will be used.
-      The specific version must be valid and this can be obtained from this [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html)
+    - If not specified the preffered version will be used.
+    - The specific version must be valid and this can be obtained from this [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html)
 EOF
   type        = string
   default     = null
 }
 
-variable "skip_final_snapshot" {
-  description = "Determines whether a final DB snapshot is created before the DB instance is deleted. If true is specified, no DBSnapshot is created. If false is specified, a DB snapshot is created before the DB instance is deleted"
+variable "skip_final_snapshot" { # TODO: Check if this has been tested (Backup will remain in AWS Backup)
+  description = <<EOF
+    Setting this will determine whether a final DB snapshot is created before the DB instance is deleted.
+    Valid Values: Specific version number, for example, "15.3" or major version number, for example, "15".
+    Notes:
+    - If true is specified, no DB Snapshot is created. If false is specified, a DB snapshot is created before the DB instance is deleted
+    - Default value is set to true. Snapshots will be created by the AWS backup job assuming that this resource is properly tagged, see [here](https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started) for more info.
+EOF
   type        = bool
-  default     = true # Snapshots are already created by the AWS backup job.
+  default     = true
 }
 
-variable "snapshot_identifier" {
-  description = "Specifies whether or not to create this database from a snapshot. This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+variable "snapshot_identifier" { #TODO: renamte to source_snapshot_identifier
+  description = <<EOF
+    Specifies whether or not to create this database from a snapshot.
+    Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+    Notes: .
+EOF
   type        = string
   default     = null
 }
 
 variable "copy_tags_to_snapshot" {
-  description = "On delete, copy all Instance tags to the final snapshot"
+  description = <<EOF
+    Specifies whether or not to copy all Instance tags to the final snapshot on deletion.
+    Valid Values: .
+    Notes: Default value is set to true. Snapshots will be created by the AWS backup job assuming that this resource is properly tagged, see [here](https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started) for more info.
+EOF
   type        = bool
   default     = false
 }
 
 variable "final_snapshot_identifier_prefix" {
-  description = "The name which is prefixed to the final snapshot on cluster destroy"
+  description = <<EOF
+    Specifies the name which is prefixed to the final snapshot on cluster destroy.
+    Valid Values: .
+    Notes: .
+EOF
   type        = string
   default     = "final"
 }
 
-variable "instance_class" {
-  description = "The instance type of the RDS instance"
+variable "instance_class" { # TODO: Test with default value set to null
+  description = <<EOF
+    Specify instance type of the RDS instance.
+    Valid Values: "db.t3.micro", "db.t3.small", "db.t3.medium", "db.t3.large", "db.t3.xlarge", "db.t3.2xlarge", "db.r6g.xlarge", "db.m6g.large", "db.m6g.xlarge", "db.t2.micro", "db.t2.small", "db.t2.medium", "db.m4.large", "db.m5d.large", "db.m6i.large", "db.m5.xlarge", "db.t4g.micro", "db.t4g.small", "db.t4g.large", "db.t4g.xlarge"
+    Notes: If omitted, the instance type will be set to db.t3.micro.
+EOF
   type        = string
   default     = ""
   validation {
@@ -133,200 +155,351 @@ variable "instance_class" {
 }
 
 variable "db_name" {
-  description = "The DB name to create. If omitted, no database is created initially"
+  description = <<EOF
+    Specifies The DB name to create.
+    Valid Values: .
+    Notes: If omitted, no database is created initially
+EOF
   type        = string
   default     = null
 }
 
 variable "username" {
-  description = "Username for the master DB user"
+  description = <<EOF
+    Specify Username for the master DB user.
+    Valid Values: .
+    Notes: .
+EOF
   type        = string
 }
 
 variable "password" {
   description = <<EOF
-  Password for the master DB user. Note that this may show up in logs, and it will be stored in the state file.
-  The password provided will not be used if `manage_master_user_password` is set to true.
-  EOF
+    Specify password for the master DB user.
+    Valid Values: .
+    Notes:
+    - This password may show up in logs, and it will be stored in the state file.
+    - If `manage_master_user_password` is set to true, this value will be ignored.
+EOF
   type        = string
   default     = null
   sensitive   = true
 }
 
 variable "manage_master_user_password" {
-  description = "Set to true to allow RDS to manage the master user password in Secrets Manager"
+  description = <<EOF
+    Set to true to allow RDS to manage the master user password in Secrets Manager
+    Valid Values: .
+    Notes:
+    - Default value is set to true. It is recommended to use this feature.
+    - If set to true, the `password` variable will be ignored.
+EOF
   type        = bool
   default     = true
 }
 
-variable "master_user_secret_kms_key_id" {
+# variable "master_user_secret_kms_key_id" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = <<EOF
+#   The key ARN, key ID, alias ARN or alias name for the KMS key to encrypt the master user password secret in Secrets Manager.
+#   If not specified, the default KMS key for your Amazon Web Services account is used.
+#   EOF
+#   type        = string
+#   default     = null
+# }
+
+variable "port" { # TODO: Set default value to 5432 and test after removing default value from locals.tf
   description = <<EOF
-  The key ARN, key ID, alias ARN or alias name for the KMS key to encrypt the master user password secret in Secrets Manager.
-  If not specified, the default KMS key for your Amazon Web Services account is used.
-  EOF
+    Specify the port number on which the DB accepts connections.
+    Valid Values: .
+    Notes: If omitted, the port number will set to 5432.
+EOF
   type        = string
   default     = null
 }
 
-variable "port" {
-  description = "The port on which the DB accepts connections. If not set it will be 5432"
-  type        = string
-  default     = null
-}
-
-variable "vpc_security_group_ids" {
-  description = "List of VPC security groups to associate"
-  type        = list(string)
-  default     = []
-}
+# variable "vpc_security_group_ids" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "List of VPC security groups to associate"
+#   type        = list(string)
+#   default     = []
+# }
 
 variable "availability_zone" {
-  description = "The Availability Zone of the RDS instance"
+  description = <<EOF
+    Specify the Availability Zone for the RDS instance..
+    Valid Values:
+    Notes: Only available for DB instances that do not have multi-AZ enabled.
+EOF
   type        = string
   default     = null
 }
 
 variable "instance_is_multi_az" {
-  description = "Specifies if the RDS instance is multi-AZ"
+  description = <<EOF
+    Specify if the RDS instance is multi-AZ.
+    Valid Values: .
+    Notes:
+    - This creates a primary DB instance and a standby DB instance in a different AZ for high availability and data redundancy.
+    - Standby DB instance doesn't support connections for read workloads.
+    - If this variable is omitted:
+      - This value is set to true by default for production environments.
+      - This value is set to false by default for non-production environments.
+EOF
   type        = bool
   default     = null
 }
 
 variable "iops" {
-  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1' or `gp3`. See `notes` for limitations regarding this variable for `gp3`"
+  description = <<EOF
+    Specify The amount of provisioned IOPS.
+    Valid Values: .
+    Notes: Setting this implies a storage_type of 'io1' or `gp3`. See `notes` for limitations regarding this variable for `gp3`"
+EOF
   type        = number
   default     = null
 }
 
 variable "publicly_accessible" {
-  description = "Bool to control if instance is publicly accessible"
+  description = <<EOF
+    Specify whether or not this instance is publicly accessible.
+    Valid Values: .
+    Notes:
+    - Setting this to true will do the followings:
+      - Assign a public IP address and the host name of the DB instance will resolve to the public IP address.
+      - Access from within the VPC can be achived by using the private IP address of the assigned Network Interface.
+EOF
   type        = bool
   default     = false
 }
 
 variable "enhanced_monitoring_interval" {
-  description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60"
+  description = <<EOF
+    Specify the interval between points when Enhanced Monitoring metrics are collected for the DB instance.
+    Valid Values: 0, 1, 5, 10, 15, 30, 60 (in seconds)
+    Notes: Specify 0 to disable collecting Enhanced Monitoring metrics.
+EOF
   type        = number
   default     = 0
+  validation {
+    condition     = contains([0, 1, 5, 10, 15, 30, 60], var.enhanced_monitoring_interval)
+    error_message = "Valid values for enhanced_monitoring_interval are: 0, 1, 5, 10, 15, 30, 60."
+  }
 }
 
-variable "enhanced_monitoring_role_arn" {
-  description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Must be specified if monitoring_interval is non-zero"
-  type        = string
-  default     = null
-}
+# variable "enhanced_monitoring_role_arn" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Must be specified if monitoring_interval is non-zero"
+#   type        = string
+#   default     = null
+# }
 
-variable "enhanced_monitoring_role_name" {
-  description = "Name of the IAM role which will be created when create_monitoring_role is enabled"
-  type        = string
-  default     = null
-}
+# variable "enhanced_monitoring_role_name" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Name of the IAM role which will be created when create_monitoring_role is enabled"
+#   type        = string
+#   default     = null
+# }
 
-variable "enhanced_monitoring_role_use_name_prefix" {
-  description = "Determines whether to use `monitoring_role_name` as is or create a unique identifier beginning with `monitoring_role_name` as the specified prefix"
-  type        = bool
-  default     = false
-}
+# variable "enhanced_monitoring_role_use_name_prefix" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Determines whether to use `monitoring_role_name` as is or create a unique identifier beginning with `monitoring_role_name` as the specified prefix"
+#   type        = bool
+#   default     = false
+# }
 
-variable "enhanced_monitoring_role_description" {
-  description = "Description of the monitoring IAM role"
-  type        = string
-  default     = null
-}
+# variable "enhanced_monitoring_role_description" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Description of the monitoring IAM role"
+#   type        = string
+#   default     = null
+# }
 
-variable "enhanced_monitoring_create_role" {
-  description = "Create IAM role with a defined name that permits RDS to send enhanced monitoring metrics to CloudWatch Logs"
-  type        = bool
-  default     = false
-}
+# variable "enhanced_monitoring_create_role" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Create IAM role with a defined name that permits RDS to send enhanced monitoring metrics to CloudWatch Logs"
+#   type        = bool
+#   default     = false
+# }
 
-variable "enhanced_monitoring_role_permissions_boundary" {
-  description = "ARN of the policy that is used to set the permissions boundary for the monitoring IAM role"
-  type        = string
-  default     = null
-}
+# variable "enhanced_monitoring_role_permissions_boundary" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "ARN of the policy that is used to set the permissions boundary for the monitoring IAM role"
+#   type        = string
+#   default     = null
+# }
 
-variable "enhanced_monitoring_iam_role_path" {
-  description = "Path for the monitoring role"
-  type        = string
-  default     = null
-}
+# variable "enhanced_monitoring_iam_role_path" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Path for the monitoring role"
+#   type        = string
+#   default     = null
+# }
 
 variable "allow_major_version_upgrade" {
-  description = "Indicates that major version upgrades are allowed. Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible"
+  description = <<EOF
+    Specify whether or not that major version upgrades are allowed.
+    Valid Values: .
+    Notes: Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible"
+EOF
   type        = bool
   default     = true
 }
 
 variable "auto_minor_version_upgrade" {
-  description = "Indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window"
+  description = <<EOF
+    Specify whether or not that minor engine upgrades can be applied automatically to the DB instance".
+    Valid Values: .
+    Notes: Minor engine upgrades will be applied automatically to the DB instance during the maintenance window.
+EOF
   type        = bool
   default     = true
 }
 
 variable "apply_immediately" {
-  description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
+  description = <<EOF
+    Specifiy whether any database modifications are applied immediately, or during the next maintenance window
+    Valid Values: .
+    Notes: apply_immediately can result in a brief downtime as the server reboots. See [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html) for more information.
+EOF
   type        = bool
   default     = false
 }
 
 variable "maintenance_window" {
-  description = "The window to perform maintenance in. Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'"
+  description = <<EOF
+    Specify the window to perform maintenance in.
+    Valid Values: Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'".
+    Notes: Default value is set to 'Sat:18:00-Sat:20:00'. This is adjusted in accordance with AWS Backup schedule, see info [here](https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started).
+EOF
   type        = string
-  default     = "Sat:18:00-Sat:20:00" # This is adjusted in accordance with AWS Backup schedule, see info here: https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started
+  default     = "Sat:18:00-Sat:20:00"
   validation {
     condition     = can(regex("^([a-zA-Z]{3}):([0-2][0-9]):([0-5][0-9])-([a-zA-Z]{3}):([0-2][0-9]):([0-5][0-9])$", var.maintenance_window))
     error_message = "Maintenance window must be in the format 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'"
   }
 }
-# Continuous backup takes place between 8 PM and 5 AM UTC.
-# Snapshot backups take place between 3 AM and 7 AM UTC.
 
-variable "blue_green_update" {
-  description = "Enables low-downtime updates using RDS Blue/Green deployments."
-  type        = map(string)
-  default     = {}
-}
+# variable "blue_green_update" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Enables low-downtime updates using RDS Blue/Green deployments."
+#   type        = map(string)
+#   default     = {}
+# }
 
-variable "restore_to_point_in_time" {
-  description = "Restore to a point in time (MySQL is NOT supported)"
-  type        = map(string)
-  default     = null
-}
+# variable "restore_to_point_in_time" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Restore to a point in time (MySQL is NOT supported)"
+#   type        = map(string)
+#   default     = null
+# }
 
-variable "s3_import" { # TODO: Remove if only MySQL is supported
-  description = "Restore from a Percona Xtrabackup in S3 (only MySQL is supported)"
-  type        = map(string)
-  default     = null
-}
+# variable "s3_import" { # TODO: Remove if only MySQL is supported
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Restore from a Percona Xtrabackup in S3 (only MySQL is supported)"
+#   type        = map(string)
+#   default     = null
+# }
 
-variable "create_db_subnet_group" {
-  description = "Whether to create a DB subnet group"
-  type        = bool
-  default     = true
-}
+# variable "create_db_subnet_group" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Whether to create a DB subnet group"
+#   type        = bool
+#   default     = true
+# }
 
-variable "db_subnet_group_name" {
-  description = "Name of DB subnet group. DB instance will be created in the VPC associated with the DB subnet group. If unspecified, will be created in the default VPC"
-  type        = string
-  default     = null # required # it can be null ?
-}
+# variable "db_subnet_group_name" { # Rename existing_db_subnet_group_name
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Name of DB subnet group. DB instance will be created in the VPC associated with the DB subnet group. If unspecified, will be created in the default VPC"
+#   type        = string
+#   default     = null # required # it can be null ?
+# }
 
+# # TODO: Remove
+# variable "db_subnet_group_use_name_prefix" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Determines whether to use `subnet_group_name` as is or create a unique name beginning with the `subnet_group_name` as the prefix"
+#   type        = bool
+#   default     = false
+# }
 # TODO: Remove
-variable "db_subnet_group_use_name_prefix" {
-  description = "Determines whether to use `subnet_group_name` as is or create a unique name beginning with the `subnet_group_name` as the prefix"
-  type        = bool
-  default     = false
-}
-# TODO: Remove
-variable "db_subnet_group_description" {
-  description = "Description of the DB subnet group to create"
-  type        = string
-  default     = null
-}
+# variable "db_subnet_group_description" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Description of the DB subnet group to create"
+#   type        = string
+#   default     = null
+# }
 
 variable "subnet_ids" {
-  description = "A list of VPC subnet IDs"
+  description = <<EOF
+    Provide a list of VPC subnet IDs.
+    Valid Values: .
+    Notes: IDs of the subnets must be in the same VPC as the RDS instance.
+EOF
   type        = list(string)
 }
 
@@ -344,18 +517,23 @@ variable "subnet_ids" {
 # }
 
 # TODO: Convert to local
-variable "parameter_group_use_name_prefix" { # It is good to have default value as true in case of upgrades as it results in new parameter group to be created with new engine version
-  description = "Determines whether to use `parameter_group_name` as is or create a unique name beginning with the `parameter_group_name` as the prefix"
-  type        = bool
-  default     = true
-}
+# variable "parameter_group_use_name_prefix" { # It is good to have default value as true in case of upgrades as it results in new parameter group to be created with new engine version
+#   description = "Determines whether to use `parameter_group_name` as is or create a unique name beginning with the `parameter_group_name` as the prefix"
+#   type        = bool
+#   default     = true
+# }
 
 # TODO: Convert to local
-variable "parameter_group_description" {
-  description = "Description of the DB parameter group to create"
-  type        = string
-  default     = null
-}
+# variable "parameter_group_description" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Description of the DB parameter group to create"
+#   type        = string
+#   default     = null
+# }
 
 # variable "parameter_group_family" {
 #   description = "The family of the DB parameter group"
@@ -364,7 +542,17 @@ variable "parameter_group_description" {
 # }
 
 variable "instance_parameters" {
-  description = "A list of DB parameters (map) to modify"
+  description = <<EOF
+    Specify a list of DB parameters (map) to modify.
+    Valid Values: Example:
+      instance_parameters = [{
+          name         = "rds.force_ssl"
+          value        = 1
+          apply_method = "pending-reboot",
+          ... # Other parameters
+        }]
+    Notes: See [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Parameters) for more information.
+EOF
   type        = list(map(string))
   default     = []
 }
@@ -406,80 +594,144 @@ variable "create_db_instance" { # TODO: Remove
   default     = true
 }
 
-variable "timezone" {
-  description = "Time zone of the DB instance. timezone is currently only supported by Microsoft SQL Server. The timezone can only be set on creation. See MSSQL User Guide for more information"
-  type        = string
-  default     = null
-}
+# variable "timezone" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Time zone of the DB instance. timezone is currently only supported by Microsoft SQL Server. The timezone can only be set on creation. See MSSQL User Guide for more information"
+#   type        = string
+#   default     = null
+# }
 
-variable "character_set_name" {
-  description = "The character set name to use for DB encoding in Oracle instances. This can't be changed. See Oracle Character Sets Supported in Amazon RDS and Collations and Character Sets for Microsoft SQL Server for more information. This can only be set on creation"
-  type        = string
-  default     = null
-}
+# variable "character_set_name" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "The character set name to use for DB encoding in Oracle instances. This can't be changed. See Oracle Character Sets Supported in Amazon RDS and Collations and Character Sets for Microsoft SQL Server for more information. This can only be set on creation"
+#   type        = string
+#   default     = null
+# }
 
-variable "nchar_character_set_name" {
-  description = "The national character set is used in the NCHAR, NVARCHAR2, and NCLOB data types for Oracle instances. This can't be changed."
-  type        = string
-  default     = null
-}
+# variable "nchar_character_set_name" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "The national character set is used in the NCHAR, NVARCHAR2, and NCLOB data types for Oracle instances. This can't be changed."
+#   type        = string
+#   default     = null
+# }
 
-variable "timeouts" {
-  description = "Updated Terraform resource management timeouts. Applies to `aws_db_instance` in particular to permit resource management times"
+variable "timeouts" { # Rename to instance_terraform_timeouts
+  description = <<EOF
+    Specify Terraform resource management timeouts.
+    Valid Values: .
+    Notes: Applies to `aws_db_instance` in particular to permit resource management times. See [documentation](https://www.terraform.io/docs/configuration/resources.html#operation-timeouts) for more information.
+EOF
   type        = map(string)
   default     = {}
 }
 
-variable "option_group_timeouts" {
-  description = "Define maximum timeout for deletion of `aws_db_option_group` resource"
-  type        = map(string)
-  default     = {}
-}
+# variable "option_group_timeouts" {
+#   description = <<EOF
+#     Specifies whether or not to create this database from a snapshot.
+#     Valid Values: This correlates to the snapshot ID you'd find in the RDS console, e.g: rds:production-2015-06-26-06-05"
+#     Notes: .
+# EOF
+#   description = "Define maximum timeout for deletion of `aws_db_option_group` resource"
+#   type        = map(string)
+#   default     = {}
+# }
 
 variable "deletion_protection" {
-  description = "The database can't be deleted when this value is set to true"
+  description = <<EOF
+    Specify whether or not to prevent the DB instance from being deleted.
+    Valid Values: .
+    Notes: The database can't be deleted when this value is set to true.
+EOF
   type        = bool
   default     = true
 }
 
 variable "performance_insights_enabled" {
-  description = "Specifies whether Performance Insights are enabled"
+  description = <<EOF
+    Specify whether or not to enable Performance Insights.
+    Valid Values: .
+    Notes:
+    - If this variable is omitted:
+      - This value is set to true by default for production environments. Default retention period is set to 7 days.
+      - This value is set to false by default for non-production environments.
+EOF
   type        = bool
   default     = null
 }
 
-variable "performance_insights_retention_period" {
-  description = "The amount of time in days to retain Performance Insights data. Valid values are `7`, `731` (2 years) or a multiple of `31`"
+variable "performance_insights_retention_period" { # TODO: Set default value to 7 and test after removing default value (null) from locals.tf
+  description = <<EOF
+    Specify the retention period for Performance Insights.
+    Valid Values: `7`, `731` (2 years) or a multiple of `31`
+    Notes: Set the value Default value when `performance_insights_enabled` is set to true.
+EOF
   type        = number
   default     = null
 }
 
 variable "performance_insights_kms_key_id" {
-  description = "The ARN for the KMS key to encrypt Performance Insights data"
+  description = <<EOF
+    Specify the ARN for the KMS key to encrypt Performance Insights data.
+    Valid Values: .
+    Notes:
+      - When specifying performance_insights_kms_key_id, performance_insights_enabled needs to be set to true.
+      - Once KMS key is set, it can never be changed
+EOF
   type        = string
   default     = null
 }
 
 variable "max_allocated_storage" {
-  description = "Specifies the value for Storage Autoscaling"
+  description = <<EOF
+    Set the value to enable Storage Autoscaling and to set the max allocated storage.
+    Valid Values: .
+    Notes:
+    - If this variable is omitted:
+      - This value is set to 50 by default for production environments.
+      - This value is set to 0 by default for non-production environments.
+EOF
   type        = number
-  default     = 0
+  default     = null
 }
 
 variable "ca_cert_identifier" {
-  description = "Specifies the identifier of the CA certificate for the DB instance"
+  description = <<EOF
+    Specify the identifier of the CA certificate for the DB instance.
+    Valid Values: .
+    Notes: If this variable is omitted, the latest CA certificate will be used.
+EOF
   type        = string
   default     = null
 }
 
 variable "delete_automated_backups" {
-  description = "Specifies whether to remove automated backups immediately after the DB instance is deleted"
+  description = <<EOF
+    Specify whether or not whether to remove automated backups immediately after the DB instance is deleted.
+    Valid Values: .
+    Notes: .
+EOF
   type        = bool
   default     = true
 }
 
 variable "network_type" {
-  description = "The type of network stack to use"
+  description = <<EOF
+    Specify the network type of the DB instance.
+    Valid Values: IPV4, DUAL
+    Notes: .
+EOF
   type        = string
   default     = null
 }
