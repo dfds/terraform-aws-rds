@@ -224,13 +224,14 @@ module "security_group" { # TODO: update with another rule for public access
   vpc_id                   = var.vpc_id
   ingress_with_cidr_blocks = var.rds_security_group_rules.ingress_rules
   ingress_with_self        = var.rds_security_group_rules.ingress_with_self
+  egress_with_cidr_blocks  = var.rds_security_group_rules.egress_rules
   tags                     = local.all_tags
 }
 
 module "security_group_proxy" {
   source                   = "./modules/security_group"
   count                    = var.is_proxy_included ? 1 : 0
-  name                     = var.identifier
+  name                     = "${var.identifier}-proxy}"
   description              = "RDS PostgreSQL security group for proxy"
   vpc_id                   = var.vpc_id
   ingress_with_cidr_blocks = var.proxy_security_group_rules.ingress_rules
@@ -240,13 +241,6 @@ module "security_group_proxy" {
     protocol  = "tcp"
     description = "PostgreSQL access from within Security Gruop" }],
   var.proxy_security_group_rules.ingress_with_self)
-  egress_with_cidr_blocks = [{
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    description = "Allow all outbound traffic"
-    cidr_blocks = "0.0.0.0/0"
-  }]
   egress_with_source_security_group_id = [{
     source_security_group_id = module.security_group.security_group_id
     from_port                = local.port

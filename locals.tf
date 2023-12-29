@@ -57,7 +57,7 @@ locals {
   ########################################################################
   # DB Proxy configuration
   ########################################################################
-  proxy_name          = var.proxy_name == null ? "${var.identifier}" : var.proxy_name
+  # proxy_name          = var.proxy_name == null ? "${var.identifier}" : var.proxy_name
   db_proxy_secret_arn = var.is_proxy_included ? (local.is_serverless ? try(module.db_cluster_serverless[0].cluster_master_user_secret_arn, null) : try(module.db_instance[0].db_instance_master_user_secret_arn, null)) : null
   proxy_auth_config = var.is_proxy_included ? {
     (var.username) = {

@@ -3,10 +3,10 @@
 ################################################################################
 # Instance specific variables - applicable to cluster instances as well
 ################################################################################
-variable "is_instance" {
+
+variable "is_instance" { # TODO: Remove this variable if not used
   default = true
 }
-
 
 variable "environment" {
   description = <<EOF
@@ -91,8 +91,9 @@ variable "engine_version" {
     Specify engine version to use.
     Valid Values: Specific version number, for example, "15.3" or major version number, for example, "15".
     Notes:
-    - If not specified the preffered version will be used.
-    - The specific version must be valid and this can be obtained from this [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html)
+    - If this is omitted, the preffered version will be used.
+    - If major version is specified, the preffered version will be used.
+    - When using a specific version. The version must be valid. A valid  version can be obtained from this [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html)
 EOF
   type        = string
   default     = null
@@ -741,10 +742,13 @@ EOF
 ################################################################################
 
 variable "enabled_cloudwatch_logs_exports" {
-  description = "List of log types to enable for exporting to CloudWatch logs. If omitted, no logs will be exported. Valid values postgresql (PostgreSQL), upgrade (PostgreSQL)"
+  description = <<EOF
+    Specify the list of log types to enable for exporting to CloudWatch logs.
+    Valid Values: postgresql (PostgreSQL), upgrade (PostgreSQL)
+    Notes: If omitted, no logs will be exported.
+EOF
   type        = list(string)
   default     = []
-
   validation {
     condition = alltrue([
       for s in var.enabled_cloudwatch_logs_exports : contains(["postgresql", "upgrade"], s)
@@ -754,19 +758,31 @@ variable "enabled_cloudwatch_logs_exports" {
 }
 
 variable "cloudwatch_log_group_retention_in_days" {
-  description = "The number of days to retain CloudWatch logs for the DB instance"
+  description = <<EOF
+    Specify the retention period in days for the CloudWatch logs.
+    Valid Values: Number of days
+    Notes: .
+EOF
   type        = number
   default     = 1
 }
 
 variable "cloudwatch_log_group_kms_key_id" {
-  description = "The ARN of the KMS Key to use when encrypting log data"
+  description = <<EOF
+    Specify the ARN of the KMS Key to use when encrypting log data.
+    Valid Values: .
+    Notes: .
+EOF
   type        = string
   default     = null
 }
 
 variable "cloudwatch_log_group_skip_destroy_on_deletion" {
-  description = "Should we skip to destroy CloudWatch log group on deletion?"
+  description = <<EOF
+    Specify whether or not to skip the deletion of the CloudWatch log group on deletion.
+    Valid Values: .
+    Notes: .
+EOF
   type        = bool
   default     = false
 }
@@ -840,13 +856,13 @@ variable "cluster_replication_source_identifier" {
   default     = null
 }
 
-variable "cluster_scaling_configuration" {
+variable "cluster_scaling_configuration" { # TODO: Prefix with serverless
   description = "Map of nested attributes with scaling properties. Only valid when `engine_mode` is set to `serverless`"
   type        = map(string)
   default     = {}
 }
 
-variable "cluster_serverlessv2_scaling_configuration" {
+variable "cluster_serverlessv2_scaling_configuration" { # TODO: Prefix with serverless
   description = "Map of nested attributes with serverless v2 scaling properties. Only valid when `engine_mode` is set to `provisioned`"
   type        = map(string)
   default     = {}
@@ -875,7 +891,7 @@ variable "cluster_db_instance_count" {
   default = 0
 }
 
-variable "cluster_instances_use_identifier_prefix" {
+variable "cluster_instances_use_identifier_prefix" { # TODO: Remove if not needed
   description = "Determines whether cluster instance identifiers are used as prefixes"
   type        = bool
   default     = false
@@ -993,37 +1009,57 @@ variable "cluster_engine_native_audit_fields_included" {
 ################################################################################
 
 variable "is_proxy_included" {
-  description = "Optionally include proxy to help manage database connections"
+  description = <<EOF
+    Specify whether or not to include proxy.
+    Valid Values: .
+    Notes: Proxy helps managing database connections. See [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-planning.html) for more information.
+EOF
   type        = bool
   default     = false
 }
 
 variable "proxy_debug_logging_is_enabled" {
-  description = "Turn on debug logging for the proxy"
+  description = <<EOF
+    Turn on debug logging for the proxy.
+    Valid Values: .
+    Notes: .
+EOF
   default     = false
   type        = bool
 }
 
 variable "proxy_idle_client_timeout" {
-  description = "Idle client timeout of the RDS proxy (keep connection alive)"
+  description = <<EOF
+    Specify idle client timeout of the RDS proxy (keep connection alive).
+    Valid Values: .
+    Notes: .
+EOF
   default     = 1800
   type        = number
 }
 
 variable "proxy_require_tls" {
-  description = "Require tls on the RDS proxy. Default: true"
+  description = <<EOF
+    Specify whether or not to require TLS for the proxy.
+    Valid Values: .
+    Notes: Default value is set to true.
+EOF
   type        = bool
   default     = true
 }
 
-variable "proxy_name" {
-  description = "Name of the RDS proxy. Will be auto-generated if not specified"
-  type        = string
-  default     = null
-}
+# variable "proxy_name" {
+#   description = "Name of the RDS proxy. Will be auto-generated if not specified"
+#   type        = string
+#   default     = null
+# }
 
-variable "proxy_engine_family" {
-  description = "Engine family of the RDS proxy. Default: POSTGRESQL"
+variable "proxy_engine_family" { # TODO: Remove if not needed
+  description = <<EOF
+    Specify engine family of the RDS proxy.
+    Valid Values: POSTGRESQL
+    Notes: .
+EOF
   type        = string
   default     = "POSTGRESQL"
   validation {
@@ -1033,6 +1069,14 @@ variable "proxy_engine_family" {
 }
 
 variable "proxy_security_group_rules" {
+  description = <<EOF
+    Specify additional security group rules for the RDS proxy.
+    Valid Values: .
+    Notes:
+    - Only ingress(inbound) rules are supported.
+    - Ingress rules are set to "Allow outbound traffic to PostgreSQL instance"
+    – Ingress rules are set to "Allow inbound traffic from same security group on specified database port"
+EOF
   type = object({
     ingress_rules     = list(any)
     ingress_with_self = optional(list(any), [])
@@ -1043,8 +1087,13 @@ variable "proxy_security_group_rules" {
 }
 
 variable "proxy_iam_auth" {
-  type    = string
-  default = "DISABLED"
+  description = <<EOF
+    Specify whether or not to use IAM authentication for the proxy.
+    Valid Values: DISABLED, REQUIRED
+    Notes: .
+EOF
+  type        = string
+  default     = "DISABLED"
   validation {
     condition     = contains(["DISABLED", "REQUIRED"], var.proxy_iam_auth)
     error_message = "Invalid value for var.proxy_iam_auth. Supported values: DISABLED, REQUIRED."
@@ -1062,24 +1111,39 @@ variable "is_serverless" { # tempprary variable for testing
 ################################################################################
 
 variable "vpc_id" {
-  type = string
+  description = <<EOF
+    Specify the VPC ID.
+    Valid Values: .
+    Notes: .
+EOF
+  type        = string
 }
 
 variable "rds_security_group_rules" {
+  description = <<EOF
+    Specify additional security group rules for the RDS instance.
+    Valid Values: .
+    Notes: .
+EOF
   type = object({
     ingress_rules     = list(any)
     ingress_with_self = optional(list(any), [])
+    egress_rules      = optional(list(any), [])
   })
 }
-
 
 # ################################################################################
 # # IAM Roles for ServiceAccounts (IRSA) - only applicable from Kubernetes pods
 # ################################################################################
 
-
 variable "is_kubernetes_app_enabled" {
-  description = "Determines whether to create needed resources to enable access from Kubernetes. Set this to `true` if you want to access the RDS instance from Kubernetes pods"
+  description = <<EOF
+    Specify whether or not to enable access from Kubernetes pods.
+    Valid Values: .
+    Notes: Enabling this will create the following resources:
+      - IAM role for service account (IRSA)
+      - IAM policy for service account (IRSA)
+EOF
   type        = bool
   default     = false
 }
@@ -1089,9 +1153,14 @@ variable "is_kubernetes_app_enabled" {
 ################################################################################
 
 variable "resource_owner_contact_email" {
-  description = "Sets the dfds.owner tag"
-  type        = string
-  default     = null
+  description = <<EOF
+    Provide an email address for the resource owner (e.g. team or individual).
+    Valid Values: .
+    Notes: This set the dfds.owner tag. See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
+EOF
+
+  type    = string
+  default = null
   validation {
     condition     = var.resource_owner_contact_email == null || can(regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", var.resource_owner_contact_email))
     error_message = "Invalid value for var.resource_owner_contact_email. Must be a valid email address."
@@ -1099,18 +1168,30 @@ variable "resource_owner_contact_email" {
 }
 
 variable "cost_centre" {
-  description = "Sets the dfds.cost_centre tag. See recommendations here: https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy"
+  description = <<EOF
+    Provide a cost centre for the resource.
+    Valid Values: .
+    Notes: This set the dfds.cost_centre tag. See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
+EOF
   type        = string
 }
 
 variable "enable_default_backup" {
-  description = "Sets the dfds.data.backup tag to true on non-prod resources. Tag is set to true for prod and false for non-prod. Default backup retention is 30 days Point-in-time. More info here https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy"
+  description = <<EOF
+    Specify whether or not to enable default backup.
+    Valid Values: .
+    Notes: This set the dfds.backup tag. See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
+EOF
   type        = bool
   default     = null
 }
 
 variable "additional_backup_retention" {
-  description = "Sets the dfds.data.backup_retention tag to the specified value. See recommendations here: https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy. For additional info on how backup works see https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started"
+  description = <<EOF
+    Specify additional backup retention.
+    Valid Values: 30days, 60days, 180days, 1year, 10year
+    Notes: This set the dfds.backup_retention tag. See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
+EOF
   type        = string
   default     = ""
   validation {
@@ -1120,7 +1201,11 @@ variable "additional_backup_retention" {
 }
 
 variable "data_classification" {
-  description = "Sets the dfds.data.classification tag to the specified value. See recommendations here: https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy"
+  description = <<EOF
+    Specify data classification.
+    Valid Values: public, private, confidential, restricted
+    Notes: This set the dfds.data.classification tag. See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
+EOF
   type        = string
   validation {
     condition     = contains(["public", "private", "confidential", "restricted"], var.data_classification)
@@ -1129,7 +1214,11 @@ variable "data_classification" {
 }
 
 variable "service_availability" {
-  description = "Sets the dfds.service.availability tag to the specified value. See recommendations here: https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy"
+  description = <<EOF
+    Specify service availability.
+    Valid Values: low, medium, high
+    Notes: This set the dfds.service.availability tag. See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
+EOF
   type        = string
   validation {
     condition     = contains(["low", "medium", "high"], var.service_availability)
@@ -1139,16 +1228,25 @@ variable "service_availability" {
 
 variable "optional_data_specific_tags" {
   description = <<EOF
-    Provide list of tags that are prefixed with dfds.data.* tags on data resources.
-    Use this variable to ensure that they get applied on the relevant data resources. See here for recommended and opitonal tags: https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy.
-    Note: Required tags are supplied through dedicated variables.
+    Provide list of optional dfds.data.* to be applied on data specific resources.
+    Valid Values: .
+    Notes:
+    - Use this only for optional data tags. Required tags are supplied through dedicated variables.
+    - This variable will apply tags only on the relevant data resources.
+    - See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
 EOF
   type        = map(string)
   default     = {}
 }
 
 variable "optional_tags" {
-  description = "Sets the dfds.* tags on all resources"
+  description = <<EOF
+    Provide list of optional dfds.* tags to be applied on all resources.
+    Valid Values: .
+    Notes:
+    - Use this only for optional tags. Required tags are supplied through dedicated variables.
+    - See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
+EOF
   type        = map(string)
   default     = {}
 }
