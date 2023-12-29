@@ -997,7 +997,6 @@ variable "pipeline_location" {
   # make it required
   # remove default value
   # add validation: for example: #(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?\/[a-zA-Z0-9]{2,}
-
   description = <<EOF
     Specify a valid URL to repo of automation script used.
     Valid Values: URL to repo. Example: `"https://github.com/dfds/aws-modules-rds/actions/workflows/qa.yml"`
