@@ -106,7 +106,7 @@ locals {
   is_major_engine_version               = try(length(regexall("\\.[0-9]+$", var.engine_version)) > 0, true) # For example, 15 is a major version, but 15.5 is not
   environment                           = var.environment == "prod" ? var.environment : "non-prod"
   default_config                        = local.config[local.environment]
-  instance_class                        = var.instance_class != "" ? var.instance_class : local.default_config.instance_class
+  instance_class                        = var.instance_class != null ? var.instance_class : local.default_config.instance_class
   allocated_storage                     = var.allocated_storage != null ? var.allocated_storage : local.default_config.allocated_storage
   max_allocated_storage                 = var.max_allocated_storage != null ? var.max_allocated_storage : local.default_config.max_allocated_storage
   password                              = var.manage_master_user_password ? null : var.password
@@ -132,7 +132,7 @@ locals {
     "dfds.cost.centre" : var.cost_centre,
     "dfds.service.availability" : var.service_availability,
   }, var.optional_tags, local.resource_owner_contact_email)
-  data_backup_retention_tag = var.additional_backup_retention != "" ? { "dfds.data.backup.retention" : var.additional_backup_retention } : {}
+  data_backup_retention_tag = var.additional_backup_retention != null ? { "dfds.data.backup.retention" : var.additional_backup_retention } : {}
   data_tags = merge({
     "dfds.data.backup" : var.enable_default_backup,
     "dfds.data.classification" : var.data_classification,
