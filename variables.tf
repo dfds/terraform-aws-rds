@@ -340,8 +340,8 @@ EOF
 variable "maintenance_window" {
   description = <<EOF
     Specify the window to perform maintenance in.
-    Valid Values: Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'".
-    Notes: Default value is set to 'Sat:18:00-Sat:20:00'. This is adjusted in accordance with AWS Backup schedule, see info [here](https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started).
+    Valid Values: Syntax: `ddd:hh24:mi-ddd:hh24:mi`. Eg: `Mon:00:00-Mon:03:00`.
+    Notes: Default value is set to `Sat:18:00-Sat:20:00`. This is adjusted in accordance with AWS Backup schedule, see info [here](https://wiki.dfds.cloud/en/playbooks/aws-backup/aws-backup-getting-started).
 EOF
   type        = string
   default     = "Sat:18:00-Sat:20:00"
