@@ -127,11 +127,14 @@ locals {
   resource_owner_contact_email = var.resource_owner_contact_email != null ? {
     "dfds.owner" = var.resource_owner_contact_email
   } : {}
+  automation_initiator_pipeline_tag = var.pipeline_location != null ? { "dfds.automation.initiator.pipeline" : var.pipeline_location } : {}
   all_tags = merge({
     "dfds.env" : var.environment,
     "dfds.cost.centre" : var.cost_centre,
     "dfds.service.availability" : var.service_availability,
-  }, var.optional_tags, local.resource_owner_contact_email)
+    "dfds.automation.tool" : "Terraform",
+    "dfds.automation.initiator.location" : "https://github.com/dfds/aws-modules-rds",
+  }, var.optional_tags, local.resource_owner_contact_email, local.automation_initiator_pipeline_tag)
   data_backup_retention_tag = var.additional_backup_retention != null ? { "dfds.data.backup.retention" : var.additional_backup_retention } : {}
   data_tags = merge({
     "dfds.data.backup" : var.enable_default_backup,
