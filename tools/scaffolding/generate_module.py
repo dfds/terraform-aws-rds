@@ -9,8 +9,7 @@ absolute_path=os.path.dirname(__file__)
 SOURCE=absolute_path + "/temp/doc.json"
 INPUT=absolute_path + "/temp/tf_module.json"
 TEMPLATE=absolute_path + "/templates/main.tf.template"
-OUTPUT=absolute_path + "/generated_files/terraform/module.tf"
-print(SOURCE)
+OUTPUT=absolute_path + "/auto-generated/terraform/module.tf"
 
 with open(SOURCE, "r") as f:
     lines = f.readlines()

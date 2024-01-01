@@ -8,9 +8,9 @@ absolute_path=os.path.dirname(__file__)
 DOCKER_TEMPLATE=os.path.join(absolute_path,"templates/compose.yml.template")
 ENV_TEMPLATE=os.path.join(absolute_path,"templates/env.template")
 DOCKER_SCRIPT_TEMPLATE=os.path.join(absolute_path, "templates/restore.sh.template")
-OUTPUT_DOCKER=os.path.join(absolute_path, "generated_files/docker/compose.yml")
-OUTPUT_ENV=os.path.join(absolute_path, "generated_files/docker/.env")
-OUTPUT_DOCKER_SCRIPT=os.path.join(absolute_path, "generated_files/docker/restore.sh")
+OUTPUT_DOCKER=os.path.join(absolute_path, "auto-generated/docker/compose.yml")
+OUTPUT_ENV=os.path.join(absolute_path, "auto-generated/docker/.env")
+OUTPUT_DOCKER_SCRIPT=os.path.join(absolute_path, "auto-generated/docker/restore.sh")
 
 vars_sub = {
     'pgpassword': 'example',
