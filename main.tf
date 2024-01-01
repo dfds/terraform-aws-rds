@@ -111,7 +111,7 @@ module "db_instance" {
   backup_window                         = local.backup_window
   monitoring_interval                   = var.enhanced_monitoring_interval
   monitoring_role_arn                   = local.monitoring_role_arn
-  timeouts                              = var.timeouts
+  timeouts                              = var.instance_terraform_timeouts
   deletion_protection                   = var.deletion_protection
   delete_automated_backups              = local.delete_automated_backups
   enabled_cloudwatch_logs_exports       = var.enabled_cloudwatch_logs_exports

@@ -384,7 +384,7 @@ variable "create_db_instance" { # TODO: Remove
 }
 
 
-variable "timeouts" { # Rename to instance_terraform_timeouts
+variable "instance_terraform_timeouts" {
   description = <<EOF
     Specify Terraform resource management timeouts.
     Valid Values: .
@@ -839,7 +839,7 @@ EOF
   }
 }
 
-variable "is_serverless" { # tempprary variable for testing
+variable "is_serverless" { # temporary variable for testing
   type    = bool
   default = false
 }
