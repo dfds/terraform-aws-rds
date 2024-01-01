@@ -1,0 +1,22 @@
+terraform {
+  backend "s3" {
+    bucket         = "example-state-bucket"
+    encrypt        = true
+    key            = "example/terraform.tfstate"
+    region         = "eu-central-1"
+    dynamodb_table = "terraform-locks"
+  }
+}
+
+
+provider "aws" {
+  region = "eu-central-1"
+}
+
+
+module "db_instance_example" {
+  source = "git::https://github.com/dfds/aws-modules-rds.git"
+$inputs
+}
+
+$outputs
