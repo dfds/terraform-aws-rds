@@ -3,13 +3,12 @@ import json
 from string import Template
 import re
 import os
+import sys
 
-absolute_path=os.path.dirname(__file__)
-
-SOURCE=absolute_path + "/temp/doc.json"
-INPUT=absolute_path + "/temp/tf_module.json"
-TEMPLATE=absolute_path + "/templates/main.tf.template"
-OUTPUT=absolute_path + "/auto-generated/terraform/module.tf"
+SOURCE = sys.argv[1]
+INPUT = sys.argv[2]
+TEMPLATE = sys.argv[3]
+OUTPUT = sys.argv[4]
 
 with open(SOURCE, "r") as f:
     lines = f.readlines()
