@@ -33,6 +33,9 @@ terraform-docs json --show "all" $SOURCE_MODULE_PATH --output-file $OUTPUT_JSON_
 # 2) Generate TF files
 python3 $SCRIPTS_PATH/generate_module.py $SOURCE_JSON_DOC $GENERATED_TF_MODULE_DATA $TF_MODULE_TEMPLATE $TF_MODULE_OUTPUT
 
+# TODO: run terraform fmt
+terraform fmt $TF_OUTPUT_FOLDERS
+
 # 3) Generate Docker files
 python3 $SCRIPTS_PATH/generate_docker.py $DOCKER_COMPOSE_TEMPLATE $DOCKER_COMPOSE_OUTPUT $DOCKER_ENV_TEMPLATE $DOCKER_ENV_OUTPUT $DOCKER_SCRIPT_TEMPLATE $DOCKER_SCRIPT_OUTPUT
 
