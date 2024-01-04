@@ -4,10 +4,6 @@
 # Instance specific variables - applicable to cluster instances as well
 ################################################################################
 
-# variable "is_instance" { # TODO: Remove this variable if not used
-#   default = true
-# }
-
 variable "environment" {
   description = <<EOF
     Specify the staging environment.
@@ -740,11 +736,6 @@ EOF
     error_message = "Invalid value for var.proxy_iam_auth. Supported values: DISABLED, REQUIRED."
   }
 }
-
-# variable "is_serverless" { # temporary variable for testing
-#   type    = bool
-#   default = false
-# }
 
 
 ################################################################################
