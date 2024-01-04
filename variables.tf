@@ -4,9 +4,9 @@
 # Instance specific variables - applicable to cluster instances as well
 ################################################################################
 
-variable "is_instance" { # TODO: Remove this variable if not used
-  default = true
-}
+# variable "is_instance" { # TODO: Remove this variable if not used
+#   default = true
+# }
 
 variable "environment" {
   description = <<EOF
@@ -25,7 +25,7 @@ variable "identifier" {
   description = <<EOF
     Specify the name of the RDS instance to create.
     Valid Values: .
-    Notes: .
+    Notes: This
 EOF
   type        = string
 }
@@ -537,8 +537,18 @@ EOF
 ################################################################################
 
 variable "is_cluster" {
-  type    = bool
-  default = false
+  description = <<EOF
+    [Experiemental Feature] Specify whether or not to deploy the instance as multi-az database cluster.
+    Valid Values: .
+    Notes:
+    - This feature is currently in beta and is subject to change.
+    - It creates a DB cluster with a primary DB instance and two readable standby DB instances,
+    - Each DB instance in a different Availability Zone (AZ).
+    - Provides high availability, data redundancy and increases capacity to serve read workloads
+    - For smaller workloads we recommend considering using a single instance instead of a cluster.
+EOF
+  type        = bool
+  default     = false
 }
 
 variable "cluster_is_primary_cluster" { # TODO: Remove if not needed
@@ -839,10 +849,10 @@ EOF
   }
 }
 
-variable "is_serverless" { # temporary variable for testing
-  type    = bool
-  default = false
-}
+# variable "is_serverless" { # temporary variable for testing
+#   type    = bool
+#   default = false
+# }
 
 
 ################################################################################

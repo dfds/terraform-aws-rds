@@ -38,7 +38,7 @@ with open(work_folder, "r") as f: # TODO: source="" should load the latest relea
     data = json.load(f)
     for i in data['inputs']:
         if i['name'].startswith('is_'): # Support to show toggles
-            extractedFeature = re.search('(?<=is_)(.*?)(?=_)', i['name'])
+            extractedFeature = re.search('(?<=is_)(.*?)(?=_|$)', i['name'])
             if extractedFeature:
                 desc = i['description']
                 inputList.append("")
