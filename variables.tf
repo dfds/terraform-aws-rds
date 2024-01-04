@@ -545,6 +545,7 @@ variable "is_cluster" {
     - It creates a DB cluster with a primary DB instance and two readable standby DB instances,
     - Each DB instance in a different Availability Zone (AZ).
     - Provides high availability, data redundancy and increases capacity to serve read workloads
+    - Proxy is not supported for cluster instances.
     - For smaller workloads we recommend considering using a single instance instead of a cluster.
 EOF
   type        = bool
