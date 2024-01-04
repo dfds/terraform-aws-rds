@@ -21,7 +21,7 @@ variable "identifier" {
   description = <<EOF
     Specify the name of the RDS instance to create.
     Valid Values: .
-    Notes: This
+    Notes: .
 EOF
   type        = string
 }
