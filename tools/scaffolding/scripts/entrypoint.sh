@@ -1,6 +1,11 @@
 scripts_path="/scripts"
 source_module_path="/input"
 
+if [ ! -d "/output" ]; then
+   echo "output folder does not exist"
+   exit 1
+fi
+
 # TERRAFORM DOCS
 output_json_file="/tmp/doc.json"
 
@@ -27,6 +32,8 @@ if [ -z "$(ls -a $source_module_path)" ]; then
    echo "empty $source_module_path"
    exit 1
 fi
+
+
 # TODO: CHECK FOR output folder mount
 
 # 1) Generate docs for all modules in a repo
