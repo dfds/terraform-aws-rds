@@ -276,7 +276,7 @@ EOF
   default     = null
 }
 
-variable "publicly_accessible" {
+variable "is_publicly_accessible" {
   description = <<EOF
     Specify whether or not this instance is publicly accessible.
     Valid Values: .

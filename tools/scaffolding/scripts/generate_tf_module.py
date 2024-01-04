@@ -27,9 +27,9 @@ with open(work_folder, "w", encoding='UTF-8') as f:
     for line in lines:
         if not(line.strip("\n") == "<!-- BEGIN_TF_DOCS -->" or line.strip("\n") == "<!-- END_TF_DOCS -->"):
             f.write(line)
-inputList = []
-outputList = []
-outputTemplate = """output "$out_name" {
+input_list = []
+output_list = []
+OUTPUT_TEMPLATE = """output "$out_name" {
   description = "$output_description"
   value       = try(module.db_instance_example.$out_value, null)
 }"""
@@ -38,34 +38,34 @@ with open(work_folder, "r") as f:
     data = json.load(f)
     for i in data['inputs']:
         if i['name'].startswith('is_'):
-            extractedFeature = re.search('(?<=is_)(.*?)(?=_|$)', i['name'])
-            if extractedFeature:
+            extracted_feature = re.search('(?<=is_)(.*?)(?=_|$)', i['name'])
+            if extracted_feature:
                 desc = i['description']
-                inputList.append("")
+                input_list.append("")
                 for line in desc.splitlines():
-                    inputList.append('# ' + line)
-                feature = extractedFeature.group(0)
-                if i['required'] == False:
+                    input_list.append('# ' + line)
+                feature = extracted_feature.group(0)
+                if i['required'] is False:
                     if i['type'] == 'bool':
-                        paramVal = i['default']
-                        inputList.append(i['name'] + ' = ' + str(paramVal).lower())
-        elif i['required'] == True:
+                        param_val = i['default']
+                        input_list.append(i['name'] + ' = ' + str(param_val).lower())
+        elif i['required'] is True:
             desc = i['description']
-            inputList.append("")
+            input_list.append("")
             for line in desc.splitlines():
-                inputList.append('# ' + line)
-            inputList.append(i['name'] + ' = "example"')
+                input_list.append('# ' + line)
+            input_list.append(i['name'] + ' = "example"')
     for y in data['outputs']:
-        outputSub = {
+        output_sub = {
             'out_name': y['name'],
             'output_description': y['description'],
             'out_value': y['name'],
         }
-        outputList.append(Template(outputTemplate).substitute(outputSub))
+        output_list.append(Template(OUTPUT_TEMPLATE).substitute(output_sub))
 
 vars_sub = {
-    'inputs': '\n'.join(inputList),
-    'outputs': '\n'.join(outputList),
+    'inputs': '\n'.join(input_list),
+    'outputs': '\n'.join(output_list),
 }
 
 with open(tf_template, 'r', encoding='UTF-8') as f:
