@@ -34,7 +34,7 @@ OUTPUT_TEMPLATE = """output "$out_name" {
   value       = try(module.db_instance_example.$out_value, null)
 }"""
 
-with open(work_folder, "r") as f:
+with open(work_folder, "r", encoding='UTF-8') as f:
     data = json.load(f)
     for i in data['inputs']:
         if i['name'].startswith('is_'):
