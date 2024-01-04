@@ -15,7 +15,7 @@ provider "aws" {
 
 
 module "db_instance_example" {
-  source = "git::https://github.com/dfds/aws-modules-rds.git"
+  source = "git::https://github.com/dfds/aws-modules-rds.git?ref=<release_number>"
 $inputs
 }
 

@@ -1,43 +1,44 @@
-SCRIPTS_PATH="/scripts"
-SOURCE_MODULE_PATH="/input"
+scripts_path="/scripts"
+source_module_path="/input"
+
+# TERRAFORM DOCS
+output_json_file="/tmp/doc.json"
 
 # TERRAFORM
-OUTPUT_JSON_FILE="/tmp/doc.json"
-SOURCE_JSON_DOC=$OUTPUT_JSON_FILE
-GENERATED_TF_MODULE_DATA="/tmp/tf_module.json"
-TF_MODULE_TEMPLATE="/templates/main.tf.template"
-TF_MODULE_OUTPUT="/output/terraform/module.tf"
-TF_OUTPUT_FOLDERS="/output/terraform"
-mkdir -p $TF_OUTPUT_FOLDERS
+source_json_doc=$output_json_file
+generated_tf_module_data="/tmp/tf_module.json"
+tf_module_template="/templates/main.tf.template"
+tf_module_output="/output/terraform/module.tf"
+tf_output_folders="/output/terraform"
+mkdir -p $tf_output_folders
 
 # DOCKER
-DOCKER_COMPOSE_TEMPLATE="/templates/compose.yml.template"
-DOCKER_COMPOSE_OUTPUT="/output/docker/compose.yml"
-DOCKER_ENV_TEMPLATE="/templates/.env.template"
-DOCKER_ENV_OUTPUT="/output/docker/.env"
-DOCKER_SCRIPT_TEMPLATE="/templates/restore.sh.template"
-DOCKER_SCRIPT_OUTPUT="/output/docker/restore.sh"
-DOCKER_OUTPUT_FOLDERS="/output/docker"
+docker_compose_template="/templates/compose.yml.template"
+docker_compose_output="/output/docker/compose.yml"
+docker_env_template="/templates/.env.template"
+docker_env_output="/output/docker/.env"
+docker_script_template="/templates/restore.sh.template"
+docker_script_output="/output/docker/restore.sh"
+docker_output_folders="/output/docker"
 
-mkdir -p $DOCKER_OUTPUT_FOLDERS
+mkdir -p $docker_output_folders
 
-if [ -z "$(ls -A $SOURCE_MODULE_PATH)" ]; then
-   echo "Empty $SOURCE_MODULE_PATH"
+if [ -z "$(ls -a $source_module_path)" ]; then
+   echo "empty $source_module_path"
    exit 1
 fi
-# TODO: CHECK FOR output folder mounted
+# TODO: CHECK FOR output folder mount
 
 # 1) Generate docs for all modules in a repo
-terraform-docs json --show "all" $SOURCE_MODULE_PATH --output-file $OUTPUT_JSON_FILE
+terraform-docs json --show "all" $source_module_path --output-file $output_json_file
 
-# 2) Generate TF files
-python3 $SCRIPTS_PATH/generate_module.py $SOURCE_JSON_DOC $GENERATED_TF_MODULE_DATA $TF_MODULE_TEMPLATE $TF_MODULE_OUTPUT
+# # 2) Generate TF files
+python3 $scripts_path/generate_tf_module.py --source-tf-doc $source_json_doc --temp-work-folder $generated_tf_module_data --tf-module-template $tf_module_template --tf-output-path $tf_module_output
 
-# TODO: run terraform fmt
-terraform fmt $TF_OUTPUT_FOLDERS
+# # 3) Format TF files
+terraform fmt $tf_output_folders
 
 # 3) Generate Docker files
-python3 $SCRIPTS_PATH/generate_docker.py $DOCKER_COMPOSE_TEMPLATE $DOCKER_COMPOSE_OUTPUT $DOCKER_ENV_TEMPLATE $DOCKER_ENV_OUTPUT $DOCKER_SCRIPT_TEMPLATE $DOCKER_SCRIPT_OUTPUT
-
+python3 $scripts_path/generate_docker.py --docker-compose-template $docker_compose_template --docker-compose-output $docker_compose_output  --env-template $docker_env_template --env-output $docker_env_output --docker-script-template $docker_script_template --docker-script-output $docker_script_output
 # 4) Generate pipeline files
 # TODO: generate pipeline

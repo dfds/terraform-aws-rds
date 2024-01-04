@@ -1,14 +1,26 @@
-"""This scripts generate boiler plates for using docker compose files. Input: Template files, Output: Docker compose files."""
+"""This scripts generates boiler plates for using docker compose files. Input: Template files, Output: Docker compose files."""
 from string import Template
 import shutil
-import sys
+import argparse
 
-DOCKER_TEMPLATE=sys.argv[1]
-OUTPUT_DOCKER = sys.argv[2]
-ENV_TEMPLATE = sys.argv[3]
-OUTPUT_ENV = sys.argv[4]
-DOCKER_SCRIPT_TEMPLATE = sys.argv[5]
-OUTPUT_DOCKER_SCRIPT = sys.argv[6]
+parser = argparse.ArgumentParser(
+                    prog='Docker Compose Generator',
+                    description='This scripts generates boiler plates for using docker compose files. Input: Template files, Output: Docker compose files.',
+                    epilog='.')
+parser.add_argument('--docker-compose-template', type=str, required=True, help='The template file for the docker compose.')
+parser.add_argument('--docker-compose-output', type=str, required=True, help='The output path for the docker compose.')
+parser.add_argument('--env-template', type=str, required=True, help='The template file for the env file.')
+parser.add_argument('--env-output', type=str, required=True, help='The output path for the env file.')
+parser.add_argument('--docker-script-template', type=str, required=True, help='The template file for the script that is used by the generated docker compose file.')
+parser.add_argument('--docker-script-output', type=str, required=True, help='The output path for the script used that is by the generated docker compose file.')
+args = parser.parse_args()
+
+docker_template = args.docker_compose_template
+output_docker = args.docker_compose_output
+env_template = args.env_template
+output_env = args.env_output
+docker_script_template = args.docker_script_template
+output_docker_script = args.docker_script_output
 
 vars_sub = {
     'pgpassword': 'example',
@@ -18,13 +30,13 @@ vars_sub = {
     'pguser': 'example'
 }
 
-with open(ENV_TEMPLATE, 'r', encoding='UTF-8') as f:
+with open(env_template, 'r', encoding='UTF-8') as f:
     src = Template(f.read())
     result = src.substitute(vars_sub)
 
-with open(OUTPUT_ENV, "w", encoding='UTF-8') as f:
+with open(output_env, "w", encoding='UTF-8') as f:
     f.write(result)
 
-shutil.copy(DOCKER_TEMPLATE, OUTPUT_DOCKER)
+shutil.copy(docker_template, output_docker)
 
-shutil.copy(DOCKER_SCRIPT_TEMPLATE, OUTPUT_DOCKER_SCRIPT)
+shutil.copy(docker_script_template, output_docker_script)
