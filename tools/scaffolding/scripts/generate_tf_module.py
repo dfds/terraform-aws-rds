@@ -34,10 +34,10 @@ outputTemplate = """output "$out_name" {
   value       = try(module.db_instance_example.$out_value, null)
 }"""
 
-with open(work_folder, "r") as f: # TODO: source="" should load the latest release!
+with open(work_folder, "r") as f:
     data = json.load(f)
     for i in data['inputs']:
-        if i['name'].startswith('is_'): # Support to show toggles
+        if i['name'].startswith('is_'):
             extractedFeature = re.search('(?<=is_)(.*?)(?=_|$)', i['name'])
             if extractedFeature:
                 desc = i['description']
