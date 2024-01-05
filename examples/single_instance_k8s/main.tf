@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "single-postgresql-instance"
+  name   = "single-postgresql-instance-k8s"
   region = "eu-central-1"
 
   tags = {
@@ -17,7 +17,7 @@ module "rds_instance_test" {
   source                    = "../../"
   environment               = "dev"
   identifier                = local.name
-  is_kubernetes_app_enabled = false
+  is_kubernetes_app_enabled = true
   is_proxy_included         = false
   rds_security_group_rules = {
     ingress_rules = [
@@ -58,6 +58,6 @@ module "rds_instance_test" {
 module "vpc" {
   source = "../shared/"
   name   = local.name
-  cidr   = "10.20.0.0/16"
+  cidr   = "10.24.0.0/16"
   tags   = local.tags
 }

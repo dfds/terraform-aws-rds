@@ -71,7 +71,7 @@ module "enhanced_monitoring_iam_role" {
 
 module "db_instance" {
   source                                = "./modules/rds_instance"
-  count                                 = var.create_db_instance ? 1 : 0
+  count                                 = !var.is_cluster ? 1 : 0
   identifier                            = var.identifier
   use_identifier_prefix                 = false
   engine                                = local.engine
@@ -142,7 +142,7 @@ module "db_multi_az_cluster" {
   allocated_storage               = local.allocated_storage
   iops                            = local.iops
   backup_retention_period         = null # Backup is managed by the organization
-  db_cluster_instance_class       = var.instance_class
+  db_cluster_instance_class       = local.instance_class
   master_username                 = var.username
   master_password                 = local.password
   manage_master_user_password     = var.manage_master_user_password

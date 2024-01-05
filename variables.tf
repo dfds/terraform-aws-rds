@@ -373,13 +373,6 @@ EOF
   default     = []
 }
 
-variable "create_db_instance" { # TODO: Remove
-  description = "Whether to create a database instance"
-  type        = bool
-  default     = true
-}
-
-
 variable "instance_terraform_timeouts" {
   description = <<EOF
     Specify Terraform resource management timeouts.

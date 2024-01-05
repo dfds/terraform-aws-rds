@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "single-postgresql-instance"
+  name   = "multiaz-postgresql-cluster"
   region = "eu-central-1"
 
   tags = {
@@ -13,8 +13,9 @@ locals {
   }
 }
 
-module "rds_instance_test" {
+module "rds_cluster_test" {
   source                    = "../../"
+  is_cluster                = true
   environment               = "dev"
   identifier                = local.name
   is_kubernetes_app_enabled = false
@@ -38,7 +39,7 @@ module "rds_instance_test" {
     ]
   }
   service_availability   = "low"
-  username               = "single_instance_user"
+  username               = "multiaz_cluster_user"
   vpc_id                 = module.vpc.vpc_id
   is_publicly_accessible = true
   subnet_ids             = concat(module.vpc.public_subnets)
@@ -48,6 +49,9 @@ module "rds_instance_test" {
   cost_centre                  = "ti-arch"
   data_classification          = "public"
   optional_tags                = local.tags
+  instance_class               = "db.m5d.large"
+  storage_type                 = "io1"
+  allocated_storage            = 100
   deletion_protection          = false
 }
 
@@ -58,6 +62,6 @@ module "rds_instance_test" {
 module "vpc" {
   source = "../shared/"
   name   = local.name
-  cidr   = "10.20.0.0/16"
+  cidr   = "10.22.0.0/16"
   tags   = local.tags
 }
