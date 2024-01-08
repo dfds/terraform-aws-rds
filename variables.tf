@@ -752,11 +752,11 @@ EOF
   type        = string
 }
 
-variable "additional_rds_security_group_rules" { # TODO: Make a note on the existing rules configured by default before adding new ones
+variable "additional_rds_security_group_rules" {
   description = <<EOF
     Specify additional security group rules for the RDS instance.
     Valid Values: .
-    Notes: .
+    Notes: Use only for special cases.
 EOF
   type = object({
     ingress_rules     = list(any)
