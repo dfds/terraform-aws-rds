@@ -554,93 +554,6 @@ variable "cluster_parameters" {
 }
 
 ################################################################################
-# Cluster Autoscaling
-################################################################################
-
-variable "cluster_autoscaling_enabled" {
-  description = "Determines whether autoscaling of the cluster read replicas is enabled"
-  type        = bool
-  default     = false
-}
-
-variable "cluster_autoscaling_max_capacity" {
-  description = "Maximum number of read replicas permitted when autoscaling is enabled"
-  type        = number
-  default     = 2
-}
-
-variable "cluster_autoscaling_min_capacity" {
-  description = "Minimum number of read replicas permitted when autoscaling is enabled"
-  type        = number
-  default     = 0
-}
-
-variable "cluster_autoscaling_policy_name" {
-  description = "Autoscaling policy name"
-  type        = string
-  default     = "target-metric"
-}
-
-variable "cluster_predefined_metric_type" {
-  description = "The metric type to scale on. Valid values are `RDSReaderAverageCPUUtilization` and `RDSReaderAverageDatabaseConnections`"
-  type        = string
-  default     = "RDSReaderAverageCPUUtilization"
-}
-
-variable "cluster_autoscaling_scale_in_cooldown" {
-  description = "Cooldown in seconds before allowing further scaling operations after a scale in"
-  type        = number
-  default     = 300
-}
-
-variable "cluster_autoscaling_scale_out_cooldown" {
-  description = "Cooldown in seconds before allowing further scaling operations after a scale out"
-  type        = number
-  default     = 300
-}
-
-variable "cluster_autoscaling_target_cpu" {
-  description = "CPU threshold which will initiate autoscaling"
-  type        = number
-  default     = 70
-}
-
-variable "cluster_autoscaling_target_connections" {
-  description = "Average number of connections threshold which will initiate autoscaling. Default value is 70% of db.r4/r5/r6g.large's default max_connections"
-  type        = number
-  default     = 700
-}
-
-################################################################################
-# Cluster Activity Stream
-################################################################################
-
-variable "create_db_cluster_activity_stream" {
-  description = "Determines whether a cluster activity stream is created."
-  type        = bool
-  default     = false
-}
-
-variable "cluster_activity_stream_mode" {
-  description = "Specifies the mode of the database activity stream. Database events such as a change or access generate an activity stream event. One of: sync, async"
-  type        = string
-  default     = null
-}
-
-variable "cluster_activity_stream_kms_key_id" {
-  description = "The AWS KMS key identifier for encrypting messages in the database activity stream"
-  type        = string
-  default     = null
-}
-
-variable "cluster_engine_native_audit_fields_included" {
-  description = "Specifies whether the database activity stream includes engine-native audit fields. This option only applies to an Oracle DB instance. By default, no engine-native audit fields are included"
-  type        = bool
-  default     = false
-}
-
-
-################################################################################
 # Proxy settings
 ################################################################################
 
@@ -698,11 +611,12 @@ EOF
   }
 }
 
-variable "proxy_security_group_rules" {
+variable "proxy_additional_security_group_rules" {
   description = <<EOF
     Specify additional security group rules for the RDS proxy.
     Valid Values: .
     Notes:
+    - Public access is not supported on RDS Proxy. See [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html#rds-proxy.limitations) for more information.
     - Only ingress(inbound) rules are supported.
     - Ingress rules are set to "Allow outbound traffic to PostgreSQL instance"
     – Ingress rules are set to "Allow inbound traffic from same security group on specified database port"
@@ -744,17 +658,28 @@ EOF
   type        = string
 }
 
-variable "rds_security_group_rules" {
+variable "additional_rds_security_group_rules" {
   description = <<EOF
     Specify additional security group rules for the RDS instance.
     Valid Values: .
-    Notes: .
+    Notes: Use only for special cases.
 EOF
   type = object({
     ingress_rules     = list(any)
     ingress_with_self = optional(list(any), [])
     egress_rules      = optional(list(any), [])
   })
+  default = {
+    ingress_rules     = []
+    ingress_with_self = []
+    egress_rules      = []
+  }
+}
+
+variable "public_access_ip_whitelist" {
+  description = "Provide a list of IP addresses to whitelist for public access"
+  type        = list(string)
+  default     = []
 }
 
 # ################################################################################
@@ -881,13 +806,13 @@ EOF
 variable "pipeline_location" { # TODO: Consider making it required. Consider how to support run from local machine. Re-Test validation.
   description = <<EOF
     Specify a valid URL path to the file used for automation script.
-    Valid Values: URL to repo. Example: `"https://github.com/dfds/aws-modules-rds/actions/workflows/qa.yml"`
+    Valid Values: URL to repo. Example: `"https://github.com/dfds/terraform-aws-rds/actions/workflows/qa.yml"`
     Notes: This set the dfds.automation.initiator.pipeline tag. See recommendations [here](https://wiki.dfds.cloud/en/playbooks/standards/tagging_policy).
 EOF
   type        = string
   default     = null
   validation {
     condition     = var.pipeline_location == null || can(regex("^(https:\\/\\/www\\.|http:\\/\\/www\\.|https:\\/\\/|http:\\/\\/)?[a-zA-Z0-9]{2,}(\\.[a-zA-Z0-9]{2,})([a-z0-9_@\\-^!#$%&+={}.\\/\\\\[\\]]+)+\\.(yml|yaml|sh)$", var.pipeline_location))
-    error_message = "Invalid value for var.pipeline_location. Supported values: URL path. Example: https://github.com/dfds/aws-modules-rds/actions/workflows/qa.yml"
+    error_message = "Invalid value for var.pipeline_location. Supported values: URL path. Example: https://github.com/dfds/terraform-aws-rds/actions/workflows/qa.yml"
   }
 }
