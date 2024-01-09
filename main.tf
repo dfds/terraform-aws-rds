@@ -222,16 +222,21 @@ module "security_group" {
   name        = var.identifier
   description = "RDS PostgreSQL security group"
   vpc_id      = var.vpc_id
-  ingress_with_cidr_blocks = concat([
-    local.peering_ingress_rule],
-    var.additional_rds_security_group_rules.ingress_rules,
-    local.public_access_sg_rules
+  ingress_with_cidr_blocks = concat(
+    [{
+      from_port   = local.port
+      to_port     = local.port
+      protocol    = "tcp"
+      description = "PostgreSQL access from within VPC"
+      cidr_blocks = data.aws_vpc.selected.cidr_block
+      }, local.peering_ingress_rule
+    ], local.public_access_sg_rules,
+    var.additional_rds_security_group_rules.ingress_rules
   )
   ingress_with_self       = var.additional_rds_security_group_rules.ingress_with_self
   egress_with_cidr_blocks = var.additional_rds_security_group_rules.egress_rules
   tags                    = local.all_tags
 }
-
 
 module "security_group_proxy" {
   source      = "./modules/security_group"
