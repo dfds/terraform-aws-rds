@@ -15,5 +15,6 @@ data "aws_vpc" "selected" {
 }
 
 data "aws_vpc_peering_connection" "kubernetes_access" {
-  tags = { Name = "oxygen-hellman" }
+  count = var.is_kubernetes_app_enabled ? 1 : 0 # Only needed if the RDS instance is not publicly accessible
+  tags  = { Name = "oxygen-hellman" }
 }

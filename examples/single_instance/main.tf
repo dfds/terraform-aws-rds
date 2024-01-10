@@ -19,24 +19,24 @@ module "rds_instance_test" {
   identifier                = local.name
   is_kubernetes_app_enabled = false
   is_proxy_included         = false
-  rds_security_group_rules = {
-    ingress_rules = [
-      {
-        from_port   = 5432
-        to_port     = 5432
-        protocol    = "tcp"
-        description = "PostgreSQL access from within VPC"
-        cidr_blocks = module.vpc.vpc_cidr_block
-      },
-      {
-        from_port   = 5432
-        to_port     = 5432
-        protocol    = "tcp"
-        description = "PostgreSQL access from internet"
-        cidr_blocks = "0.0.0.0/0"
-      },
-    ]
-  }
+  # additional_rds_security_group_rules = {
+  #   ingress_rules = [
+  #     {
+  #       from_port   = 5432
+  #       to_port     = 5432
+  #       protocol    = "tcp"
+  #       description = "PostgreSQL access from within VPC"
+  #       cidr_blocks = module.vpc.vpc_cidr_block
+  #     },
+  #     {
+  #       from_port   = 5432
+  #       to_port     = 5432
+  #       protocol    = "tcp"
+  #       description = "PostgreSQL access from internet"
+  #       cidr_blocks = "0.0.0.0/0"
+  #     },
+  #   ]
+  # }
   service_availability   = "low"
   username               = "single_instance_user"
   vpc_id                 = module.vpc.vpc_id
