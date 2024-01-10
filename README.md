@@ -47,6 +47,7 @@ Terraform module for AWS RDS instances
 | [aws_ssm_parameter.oidc_provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_vpc.selected](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 | [aws_vpc_peering_connection.kubernetes_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_peering_connection) | data source |
+| [aws_vpc_peering_connections.peering](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_peering_connections) | data source |
 
 ## Inputs
 
@@ -126,4 +127,5 @@ Terraform module for AWS RDS instances
 | <a name="output_iam_role_arn_for_aws_services"></a> [iam\_role\_arn\_for\_aws\_services](#output\_iam\_role\_arn\_for\_aws\_services) | The ARN of the IAM Role that give AWS services access to the RDS instance and Secrets Manager |
 | <a name="output_instance_engine_info"></a> [instance\_engine\_info](#output\_instance\_engine\_info) | The engine info for the selected engine of the RDS instance |
 | <a name="output_kubernetes_serviceaccount"></a> [kubernetes\_serviceaccount](#output\_kubernetes\_serviceaccount) | If you create this Kubernetes ServiceAccount, you will get access to the RDS through IRSA |
+| <a name="output_peering"></a> [peering](#output\_peering) | n/a |
 <!-- END_TF_DOCS -->
