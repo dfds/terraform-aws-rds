@@ -159,7 +159,8 @@ locals {
     } if ip != null
   ] : []
 
-  peering_ingress_rule = var.is_kubernetes_app_enabled ? [{ # Kubernetes access here is to generate IAM resources for the kubernetes service account, so we need additional toggle to use like  '&& !var.is_kubernetes_app_enabled'
+
+  peering_ingress_rule = length(data.aws_vpc_peering_connections.peering.ids) > 0 ? [{ # Only create rule if peering connection exists
     from_port   = local.default_config.port
     to_port     = local.default_config.port
     protocol    = "tcp"

@@ -61,3 +61,8 @@ module "vpc" {
   cidr   = "10.20.0.0/16"
   tags   = local.tags
 }
+
+
+output "peering" {
+  value = module.rds_instance_test.peering
+}
