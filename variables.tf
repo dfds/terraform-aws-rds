@@ -693,6 +693,7 @@ variable "is_kubernetes_app_enabled" {
     Notes: Enabling this will create the following resources:
       - IAM role for service account (IRSA)
       - IAM policy for service account (IRSA)
+      - Peering connection from EKS Cluster requires a VPC peering deployed in the AWS account.
 EOF
   type        = bool
   default     = false
