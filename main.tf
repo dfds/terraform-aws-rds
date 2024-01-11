@@ -71,7 +71,7 @@ module "enhanced_monitoring_iam_role" {
 
 module "db_instance" {
   source                                = "./modules/rds_instance"
-  count                                 = !var.is_cluster ? 1 : 0
+  count                                 = var.is_cluster ? 0 : 1
   identifier                            = var.identifier
   use_identifier_prefix                 = false
   engine                                = local.engine
