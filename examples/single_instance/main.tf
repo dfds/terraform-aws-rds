@@ -24,7 +24,7 @@ module "rds_instance_test" {
   vpc_id                       = module.vpc.vpc_id
   is_publicly_accessible       = true
   subnet_ids                   = concat(module.vpc.public_subnets)
-  resource_owner_contact_email = "example@dfds.com"
+  resource_owner_contact_email = "noreply@example.com"
   cost_centre                  = "ti-arch"
   data_classification          = "public"
   optional_tags                = local.tags
