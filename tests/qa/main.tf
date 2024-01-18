@@ -48,6 +48,6 @@ module "rds_instance_test" { # TODO: change to only use defaults and required va
   public_access_ip_whitelist = ["0.0.0.0/0"]
   is_kubernetes_app_enabled  = true
 
-  automation_initiator_location = "https://github.com/dfds/terraform-aws-rds"
+  automation_initiator_location = "https://github.com/dfds/terraform-aws-rds/"
   pipeline_location             = "https://github.com/dfds/terraform-aws-rds/actions/workflows/qa.yml"
 }
