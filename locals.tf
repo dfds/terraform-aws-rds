@@ -86,6 +86,7 @@ locals {
       performance_insights_enabled          = true,
       performance_insights_retention_period = 7,
       delete_automated_backups              = false
+      enable_default_backup                 = true
     },
     non-prod = {
       instance_class                        = "db.t3.micro",
@@ -97,6 +98,7 @@ locals {
       performance_insights_enabled          = false,
       performance_insights_retention_period = null,
       delete_automated_backups              = true
+      enable_default_backup                 = null
     }
   }
 
@@ -135,10 +137,10 @@ locals {
     "dfds.automation.initiator.location" : var.automation_initiator_location,
   }, var.optional_tags, local.resource_owner_contact_email, local.automation_initiator_pipeline_tag)
   data_backup_retention_tag = var.additional_backup_retention != null ? { "dfds.data.backup.retention" : var.additional_backup_retention } : {}
+  enable_default_backup_tag = var.enable_default_backup != null ? (var.enable_default_backup == true ? { "dfds.data.backup" : "true" } : {}) : (local.default_config.enable_default_backup == true ? { "dfds.data.backup" : "true" } : {})
   data_tags = merge({
-    "dfds.data.backup" : var.enable_default_backup,
     "dfds.data.classification" : var.data_classification,
-  }, var.optional_data_specific_tags, local.data_backup_retention_tag)
+  }, var.optional_data_specific_tags, local.data_backup_retention_tag, local.enable_default_backup_tag)
 
   ########################################################################
   # Kubernetes
