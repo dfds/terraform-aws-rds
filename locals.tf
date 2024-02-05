@@ -80,7 +80,6 @@ locals {
       instance_class                        = "db.t3.micro",
       allocated_storage                     = 20,
       max_allocated_storage                 = 50,
-      port                                  = 5432, # remove this line to use default port
       instance_is_multi_az                  = true,
       skip_final_snapshot                   = false,
       performance_insights_enabled          = true,
@@ -91,14 +90,13 @@ locals {
     non-prod = {
       instance_class                        = "db.t3.micro",
       allocated_storage                     = 20,
-      max_allocated_storage                 = 0,    # TODO: Test this
-      port                                  = 5432, # remove this line to use default port
+      max_allocated_storage                 = 0, # 0 means no limit
       instance_is_multi_az                  = false,
       skip_final_snapshot                   = true,
       performance_insights_enabled          = false,
       performance_insights_retention_period = null,
       delete_automated_backups              = true
-      enable_default_backup                 = null
+      enable_default_backup                 = false
     }
   }
 
@@ -110,7 +108,7 @@ locals {
   allocated_storage                     = var.allocated_storage != null ? var.allocated_storage : local.default_config.allocated_storage
   max_allocated_storage                 = var.max_allocated_storage != null ? var.max_allocated_storage : local.default_config.max_allocated_storage
   password                              = var.manage_master_user_password ? null : var.password
-  port                                  = var.port != null ? var.port : local.default_config.port
+  port                                  = var.port
   db_subnet_group_name                  = module.db_subnet_group[0].db_subnet_group_id
   instance_is_multi_az                  = var.instance_is_multi_az != null ? var.instance_is_multi_az : local.default_config.instance_is_multi_az
   skip_final_snapshot                   = var.skip_final_snapshot != null ? var.skip_final_snapshot : local.default_config.skip_final_snapshot
@@ -137,7 +135,11 @@ locals {
     "dfds.automation.initiator.location" : var.automation_initiator_location,
   }, var.optional_tags, local.resource_owner_contact_email, local.automation_initiator_pipeline_tag)
   data_backup_retention_tag = var.additional_backup_retention != null ? { "dfds.data.backup.retention" : var.additional_backup_retention } : {}
-  enable_default_backup_tag = var.enable_default_backup != null ? (var.enable_default_backup == true ? { "dfds.data.backup" : "true" } : {}) : (local.default_config.enable_default_backup == true ? { "dfds.data.backup" : "true" } : {})
+  enable_default_backup_tag = var.enable_default_backup != null ? (
+    var.enable_default_backup == true ? { "dfds.data.backup" : "true" } : {}
+    ) : (
+    local.default_config.enable_default_backup == true ? { "dfds.data.backup" : "true" } : {}
+  )
   data_tags = merge({
     "dfds.data.classification" : var.data_classification,
   }, var.optional_data_specific_tags, local.data_backup_retention_tag, local.enable_default_backup_tag)
