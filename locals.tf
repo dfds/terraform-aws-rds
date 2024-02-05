@@ -156,8 +156,8 @@ locals {
   ########################################################################
   public_access_sg_rules = var.is_publicly_accessible ? [
     for ip in var.public_access_ip_whitelist : {
-      from_port   = local.default_config.port
-      to_port     = local.default_config.port
+      from_port   = var.port
+      to_port     = var.port
       protocol    = "tcp"
       description = "PostgreSQL public access from IP ${ip}"
       cidr_blocks = ip
@@ -166,8 +166,8 @@ locals {
 
 
   peering_ingress_rule = length(data.aws_vpc_peering_connections.peering.ids) > 0 ? [{ # Only create rule if peering connection exists
-    from_port   = local.default_config.port
-    to_port     = local.default_config.port
+    from_port   = var.port
+    to_port     = var.port
     protocol    = "tcp"
     description = "PostgreSQL access over VPC peering"
     cidr_blocks = data.aws_vpc_peering_connection.kubernetes_access[0].peer_cidr_block_set[0].cidr_block
