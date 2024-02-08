@@ -500,6 +500,7 @@ variable "cloudwatch_log_group_retention_in_days" {
     Notes:
     - If omitted, the default value is set to 7 days for production and 1 day for non-production environments.
     - If set to 0, logs will be retained indefinitely.
+    - `-1` is an invalid value. It is used to express that the value is omitted and thus enabling the logic to calculate the default value.
 EOF
   type        = number
   default     = -1
