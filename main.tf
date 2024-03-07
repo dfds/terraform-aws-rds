@@ -1,7 +1,3 @@
-terraform {
-  backend "s3" {}
-}
-
 resource "random_id" "snapshot_identifier" {
   count = !var.skip_final_snapshot ? 1 : 0
 
