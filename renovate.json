@@ -3,6 +3,12 @@
   "extends": [
     "local>dfds/renovate-config"
   ],
+  "terraform": {
+    "fileMatch": [
+      "\\.tf$",
+      "\\.tofu$"
+    ]
+  },
   "packageRules": [
     {
       "matchUpdateTypes": [
