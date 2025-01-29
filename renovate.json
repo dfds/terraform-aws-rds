@@ -3,6 +3,9 @@
   "extends": [
     "local>dfds/renovate-config"
   ],
+  "schedule": [
+    "after 6am and before 8am on tuesday"
+  ],
   "terraform": {
     "fileMatch": [
       "\\.tf$",
