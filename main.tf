@@ -48,16 +48,16 @@ module "db_subnet_group" {
   tags            = local.all_tags
 }
 
-module "cw_log_group" {
-  source                                = "./modules/cloudwatch_log_groups"
-  count                                 = local.create_cloudwatch_log_group ? 1 : 0
-  db_identifier                         = var.identifier
-  enabled_cw_logs_exports               = local.enabled_cloudwatch_logs_exports
-  cw_log_group_retention_in_days        = local.cloudwatch_log_group_retention_in_days
-  cw_log_group_kms_key_id               = var.cloudwatch_log_group_kms_key_id
-  cw_log_group_skip_destroy_on_deletion = var.cloudwatch_log_group_skip_destroy_on_deletion
-  tags                                  = local.all_tags
-}
+# module "cw_log_group" {
+#   source                                = "./modules/cloudwatch_log_groups"
+#   count                                 = local.create_cloudwatch_log_group ? 1 : 0
+ #  db_identifier                         = var.identifier
+#   enabled_cw_logs_exports               = local.enabled_cloudwatch_logs_exports
+#   cw_log_group_retention_in_days        = local.cloudwatch_log_group_retention_in_days
+#   cw_log_group_kms_key_id               = var.cloudwatch_log_group_kms_key_id
+#   cw_log_group_skip_destroy_on_deletion = var.cloudwatch_log_group_skip_destroy_on_deletion
+#   tags                                  = local.all_tags
+# }
 
 module "enhanced_monitoring_iam_role" {
   source                               = "./modules/enhanced_monitoring_role"
