@@ -34,7 +34,7 @@ module "rds_instance_test" { # TODO: change to only use defaults and required va
   proxy_debug_logging_is_enabled         = true
   enhanced_monitoring_interval           = 0
   allow_major_version_upgrade            = true
-  engine_version                         = "16.1"
+  engine_version                         = "17.4"
   performance_insights_enabled           = true
   vpc_id                                 = "vpc-04a384af7d3657687"
   deletion_protection                    = false
