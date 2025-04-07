@@ -25,7 +25,6 @@ Terraform module for AWS RDS instances
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cluster_parameters"></a> [cluster\_parameters](#module\_cluster\_parameters) | ./modules/cluster_parameter_group | n/a |
-| <a name="module_cw_log_group"></a> [cw\_log\_group](#module\_cw\_log\_group) | ./modules/cloudwatch_log_groups | n/a |
 | <a name="module_db_cluster_serverless"></a> [db\_cluster\_serverless](#module\_db\_cluster\_serverless) | ./modules/rds_aurora | n/a |
 | <a name="module_db_instance"></a> [db\_instance](#module\_db\_instance) | ./modules/rds_instance | n/a |
 | <a name="module_db_multi_az_cluster"></a> [db\_multi\_az\_cluster](#module\_db\_multi\_az\_cluster) | ./modules/rds_aurora | n/a |
