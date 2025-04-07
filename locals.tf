@@ -53,8 +53,8 @@ locals {
   ########################################################################
   # CloudWatch log group config
   ########################################################################
-  enabled_cloudwatch_logs_exports        = length(var.enabled_cloudwatch_logs_exports) > 0 ? var.enabled_cloudwatch_logs_exports : local.default_config.enabled_cloudwatch_logs_exports
-  create_cloudwatch_log_group            = length(local.enabled_cloudwatch_logs_exports) > 0
+  enabled_logs_exports        = length(var.enabled_log_exports) > 0 ? var.enabled_log_exports : local.default_config.enabled_logs_exports
+  create_cloudwatch_log_group            = var.manage_cloudwatch_log_group_with_terraform # TODO: Rename to manage_cloudwatch_log_group_with_terraform
   cloudwatch_log_group_retention_in_days = var.cloudwatch_log_group_retention_in_days >= 0 ? var.cloudwatch_log_group_retention_in_days : local.default_config.cloudwatch_log_group_retention_in_days
 
   ########################################################################
@@ -89,7 +89,7 @@ locals {
       performance_insights_retention_period  = 7,
       delete_automated_backups               = false,
       enable_default_backup                  = true,
-      enabled_cloudwatch_logs_exports        = ["postgresql", "upgrade"],
+      enabled_logs_exports        = ["postgresql", "upgrade"],
       cloudwatch_log_group_retention_in_days = 7,
     },
     non-prod = {
@@ -102,7 +102,7 @@ locals {
       performance_insights_retention_period  = null,
       delete_automated_backups               = true,
       enable_default_backup                  = false,
-      enabled_cloudwatch_logs_exports        = [],
+      enabled_logs_exports        = [],
       cloudwatch_log_group_retention_in_days = 1,
     }
   }

@@ -476,8 +476,21 @@ EOF
 ################################################################################
 # CloudWatch Log Group
 ################################################################################
+variable "manage_cloudwatch_log_group_with_terraform" {
+  default = false
+  description = <<EOF
+    Specify whether or not to manage the CloudWatch log group with Terraform.
+    This will help on setting the retention policy for the log group.
+    Valid Values: .
+    Notes: If set to true, the log group will be managed by Terraform. If set to false, the log group will not be managed by Terraform.
+    - If set to true, the log group will be created and managed by Terraform.
+    - If set to false, the log group will be created automatically but will not be managed by Terraform."
+  EOF
+  type = bool
+}
 
-variable "enabled_cloudwatch_logs_exports" {
+
+variable "enabled_log_exports" {
   description = <<EOF
     Specify the list of log types to enable for exporting to CloudWatch logs.
     Valid Values: postgresql (PostgreSQL), upgrade (PostgreSQL)
