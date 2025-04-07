@@ -500,7 +500,7 @@ EOF
   default     = []
   validation {
     condition = alltrue([
-      for s in var.enabled_cloudwatch_logs_exports : contains(["postgresql", "upgrade"], s)
+      for s in var.enabled_log_exports : contains(["postgresql", "upgrade"], s)
     ])
     error_message = "value must be either postgresql or upgrade."
   }
