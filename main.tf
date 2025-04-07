@@ -114,7 +114,7 @@ module "db_instance" {
   timeouts                              = var.instance_terraform_timeouts
   deletion_protection                   = var.deletion_protection
   delete_automated_backups              = local.delete_automated_backups
-  enabled_cloudwatch_logs_exports       = local.enabled_cloudwatch_logs_exports
+  enabled_cloudwatch_logs_exports       = local.enabled_logs_exports
   oidc_provider                         = local.oidc_provider
   kubernetes_namespace                  = local.kubernetes_namespace
   tags                                  = local.all_tags
@@ -151,7 +151,7 @@ module "db_multi_az_cluster" {
   db_cluster_parameter_group_name = module.cluster_parameters[0].db_cluster_parameter_group_id
   vpc_security_group_ids          = concat([module.security_group.security_group_id], var.additional_rds_security_groups)
   skip_final_snapshot             = var.skip_final_snapshot
-  enabled_cloudwatch_logs_exports = local.enabled_cloudwatch_logs_exports
+  enabled_cloudwatch_logs_exports = local.enabled_logs_exports
   tags                            = local.all_tags # might also need to add rds_tags
 
 }
