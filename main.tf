@@ -50,7 +50,7 @@ module "db_subnet_group" {
 
 module "cw_log_group" {
   source                                = "./modules/cloudwatch_log_groups"
-  count                                 = local.create_cloudwatch_log_group ? 1 : 0
+  count                                 = 1
   db_identifier                         = var.identifier
   enabled_cw_logs_exports               = local.enabled_logs_exports
   cw_log_group_retention_in_days        = local.cloudwatch_log_group_retention_in_days
