@@ -354,9 +354,12 @@ variable "subnet_ids" {
   description = <<EOF
     Provide a list of VPC subnet IDs.
     Valid Values: .
-    Notes: IDs of the subnets must be in the same VPC as the RDS instance. Example: ["subnet-aaaaaaaaaaa", "subnet-bbbbbbbbbbb", "subnet-cccccccccc"]
-    Use Public Subnets for public databases
-    Use Private Subnets for private databases. This options should be used when setting is_kubernetes_app_enabled to true.
+    Notes:
+    - IDs of the subnets must be in the same VPC as the RDS instance. Example: ["subnet-aaaaaaaaaaa", "subnet-bbbbbbbbbbb", "subnet-cccccccccc"]
+    - For Subnet IDs, use the following:
+      - Use Private Subnets for private databases
+      - Use Public Subnets for public databases. This options should be used when setting is_kubernetes_app_enabled to true.
+      See guide [here](https://wiki.dfds.cloud/en/playbooks/blueprints/infrastructure/aws-rds-postgresql#h-5-guide-on-variable-configurations) for information on how to fetch them.
 EOF
   type        = list(string)
 }
