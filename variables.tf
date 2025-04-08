@@ -355,6 +355,8 @@ variable "subnet_ids" {
     Provide a list of VPC subnet IDs.
     Valid Values: .
     Notes: IDs of the subnets must be in the same VPC as the RDS instance. Example: ["subnet-aaaaaaaaaaa", "subnet-bbbbbbbbbbb", "subnet-cccccccccc"]
+    Use Public Subnets for public databases
+    Use Private Subnets for private databases. This options should be used when setting is_kubernetes_app_enabled to true.
 EOF
   type        = list(string)
 }
