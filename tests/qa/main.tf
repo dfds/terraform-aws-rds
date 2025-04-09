@@ -28,13 +28,13 @@ module "rds_instance_test" { # TODO: change to only use defaults and required va
   apply_immediately                      = true
   is_publicly_accessible                 = true
   subnet_ids                             = ["subnet-04d5d42ac21fd8e8f", "subnet-0e50a82dec5fc0272", "subnet-0a49d384ff2e8a580"]
-  enabled_cloudwatch_logs_exports        = ["upgrade", "postgresql"]
+  enabled_log_exports                    = ["upgrade", "postgresql"]
   cloudwatch_log_group_retention_in_days = 1
   is_proxy_included                      = true
   proxy_debug_logging_is_enabled         = true
   enhanced_monitoring_interval           = 0
   allow_major_version_upgrade            = true
-  engine_version                         = "16.1"
+  engine_version                         = "17.4"
   performance_insights_enabled           = true
   vpc_id                                 = "vpc-04a384af7d3657687"
   deletion_protection                    = false

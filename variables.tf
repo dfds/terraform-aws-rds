@@ -354,7 +354,12 @@ variable "subnet_ids" {
   description = <<EOF
     Provide a list of VPC subnet IDs.
     Valid Values: .
-    Notes: IDs of the subnets must be in the same VPC as the RDS instance. Example: ["subnet-aaaaaaaaaaa", "subnet-bbbbbbbbbbb", "subnet-cccccccccc"]
+    Notes:
+    - IDs of the subnets must be in the same VPC as the RDS instance. Example: ["subnet-aaaaaaaaaaa", "subnet-bbbbbbbbbbb", "subnet-cccccccccc"]
+    - For Subnet IDs, use the following:
+      - Use Private Subnets for private databases
+      - Use Public Subnets for public databases. This options should be used when setting is_kubernetes_app_enabled to true.
+      See guide [here](https://wiki.dfds.cloud/en/playbooks/blueprints/infrastructure/aws-rds-postgresql#h-5-guide-on-variable-configurations) for information on how to fetch them.
 EOF
   type        = list(string)
 }
@@ -476,8 +481,21 @@ EOF
 ################################################################################
 # CloudWatch Log Group
 ################################################################################
+variable "manage_cloudwatch_log_group_with_terraform" {
+  default = false
+  description = <<EOF
+    Specify whether or not to manage the CloudWatch log group with Terraform.
+    This will help on setting the retention policy for the log group.
+    Valid Values: .
+    Notes: If set to true, the log group will be managed by Terraform. If set to false, the log group will not be managed by Terraform.
+    - If set to true, the log group will be created and managed by Terraform.
+    - If set to false, the log group will be created automatically but will not be managed by Terraform."
+  EOF
+  type = bool
+}
 
-variable "enabled_cloudwatch_logs_exports" {
+
+variable "enabled_log_exports" {
   description = <<EOF
     Specify the list of log types to enable for exporting to CloudWatch logs.
     Valid Values: postgresql (PostgreSQL), upgrade (PostgreSQL)
@@ -487,7 +505,7 @@ EOF
   default     = []
   validation {
     condition = alltrue([
-      for s in var.enabled_cloudwatch_logs_exports : contains(["postgresql", "upgrade"], s)
+      for s in var.enabled_log_exports : contains(["postgresql", "upgrade"], s)
     ])
     error_message = "value must be either postgresql or upgrade."
   }
