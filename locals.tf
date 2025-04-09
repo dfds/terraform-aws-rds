@@ -102,7 +102,7 @@ locals {
       performance_insights_retention_period  = null,
       delete_automated_backups               = true,
       enable_default_backup                  = false,
-      enabled_logs_exports        = [],
+      enabled_logs_exports                   = [],
       cloudwatch_log_group_retention_in_days = 1,
     }
   }
