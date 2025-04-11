@@ -465,7 +465,7 @@ variable "delete_automated_backups" {
     Notes: .
 EOF
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "network_type" {
