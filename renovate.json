@@ -7,9 +7,9 @@
     "after 6am and before 8am on tuesday"
   ],
   "terraform": {
-    "fileMatch": [
-      "\\.tf$",
-      "\\.tofu$"
+    "managerFilePatterns": [
+      "/\\.tf$/",
+      "/\\.tofu$/"
     ]
   },
   "packageRules": [
