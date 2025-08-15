@@ -91,7 +91,6 @@ resource "aws_db_instance" "this" {
   monitoring_interval     = var.monitoring_interval
   monitoring_role_arn     = var.monitoring_interval > 0 ? var.monitoring_role_arn : null
 
-  character_set_name              = var.character_set_name
   nchar_character_set_name        = var.nchar_character_set_name
   timezone                        = var.timezone
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
@@ -152,13 +151,13 @@ data "aws_iam_policy_document" "discovery" {
   statement {
     sid       = "DiscoverInstances"
     effect    = "Allow"
-    resources = ["arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:*"]
+    resources = ["arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db:*"]
     actions   = ["rds:DescribeDBInstances"]
   }
   statement {
     sid       = "DiscoverProxies"
     effect    = "Allow"
-    resources = ["arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db-proxy:*"]
+    resources = ["arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db-proxy:*"]
     actions   = ["rds:DescribeDBProxies"]
   }
 }
@@ -167,7 +166,7 @@ data "aws_iam_policy_document" "connect" {
   statement {
     sid       = "Connect"
     effect    = "Allow"
-    resources = ["arn:aws:rds-db:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dbuser:${aws_db_instance.this.id}/*"]
+    resources = ["arn:aws:rds-db:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:dbuser:${aws_db_instance.this.id}/*"]
     actions   = ["rds-db:connect"]
   }
 }
@@ -176,13 +175,13 @@ data "aws_iam_policy_document" "secretsmanager" {
   statement {
     sid       = "DecryptSecrets"
     effect    = "Allow"
-    resources = ["arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"]
+    resources = ["arn:aws:kms:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:key/*"]
     actions   = ["kms:Decrypt"]
 
     condition {
       test     = "StringEquals"
       variable = "kms:ViaService"
-      values   = ["secretsmanager.${data.aws_region.current.name}.amazonaws.com"]
+      values   = ["secretsmanager.${data.aws_region.current.region}.amazonaws.com"]
     }
   }
 
@@ -200,7 +199,7 @@ data "aws_iam_policy_document" "secretsmanager" {
   statement {
     sid       = "GetSecrets"
     effect    = "Allow"
-    resources = ["arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!db-*"]
+    resources = ["arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:rds!db-*"]
 
     actions = [
       "secretsmanager:ListSecretVersionIds",
