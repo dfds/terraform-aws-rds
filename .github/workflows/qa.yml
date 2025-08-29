@@ -1,4 +1,7 @@
 name: QA pipeline
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
 
 on:
   pull_request:
@@ -14,6 +17,7 @@ on:
       - renovate.json
       - scripts/**
       - tests/**
+      - mise.toml
 
   workflow_dispatch:
 
@@ -28,34 +32,27 @@ defaults:
   run:
     shell: bash
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_BLUEPRINTS_QA_DEPLOY_AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_BLUEPRINTS_QA_DEPLOY_AWS_SECRET_ACCESS_KEY }}
-
 jobs:
-  qa-env:
-    runs-on: ubuntu-latest
-    container:
-      image: dfdsdk/python-pipeline:0.0.4
-    steps:
-      - name: Check environment variables
-        run: bash -c '[[ -z $AWS_ACCESS_KEY_ID || -z $AWS_SECRET_ACCESS_KEY ]] && exit 1 || true'
-
-      - name: Send alert if job fails
-        if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-        with:
-          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
-          slack_message: Test environment variables failed.
-
   qa-up:
     runs-on: ubuntu-latest
-    needs: qa-env
-    container:
-      image: dfdsdk/python-pipeline:0.0.4
     steps:
       - name: Checkout source code
         uses: actions/checkout@v5
+
+      - name: Load credentials from 1Password
+        uses: 1password/load-secrets-action@v3
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
+          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
+          AWS_ACCESS_KEY_ID: op://CloudEng-General/AWS account dfds-cloudengineering-bluep-nvfgm IAM user Deploy/username
+          AWS_SECRET_ACCESS_KEY: op://CloudEng-General/AWS account dfds-cloudengineering-bluep-nvfgm IAM user Deploy/password
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
 
       - name: Terraform Init
         id: init
@@ -81,8 +78,8 @@ jobs:
         if: failure()
         uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
         with:
-          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
-          slack_message: Spin up QA environment failed.
+          slack_webhook: ${{ env.SLACK_WEBHOOK }}
+          slack_message: Spin up QA environment for RDS failed.
 
   qa-test:
     runs-on: ubuntu-latest
@@ -92,6 +89,16 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v5
+
+      - name: Load credentials from 1Password
+        uses: 1password/load-secrets-action@v3
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
+          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
+          AWS_ACCESS_KEY_ID: op://CloudEng-General/AWS account dfds-cloudengineering-bluep-nvfgm IAM user Deploy/username
+          AWS_SECRET_ACCESS_KEY: op://CloudEng-General/AWS account dfds-cloudengineering-bluep-nvfgm IAM user Deploy/password
 
       - name: Poetry install Python packages
         id: poetry-install-packages
@@ -107,5 +114,5 @@ jobs:
         if: failure()
         uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
         with:
-          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
-          slack_message: Test QA environment failed.
+          slack_webhook: ${{ env.SLACK_WEBHOOK }}
+          slack_message: Test QA environment for RDS failed.
