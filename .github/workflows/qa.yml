@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Load credentials from 1Password
         uses: 1password/load-secrets-action@v3
@@ -88,7 +88,7 @@ jobs:
       image: dfdsdk/python-pipeline:0.0.4
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Load credentials from 1Password
         uses: 1password/load-secrets-action@v3
