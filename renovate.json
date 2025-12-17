@@ -3,9 +3,6 @@
   "extends": [
     "local>dfds/renovate-config"
   ],
-  "schedule": [
-    "after 6am and before 8am on tuesday"
-  ],
   "terraform": {
     "managerFilePatterns": [
       "/\\.tf$/",
@@ -14,11 +11,22 @@
   },
   "packageRules": [
     {
+        "matchUpdateTypes": [
+            "lockFileMaintenance"
+        ],
+        "addLabels": [
+            "lockFile",
+            "on-hold"
+        ],
+        "minimumReleaseAge": null,
+        "automerge": false,
+        "matchCurrentVersion": "!/^0/"
+    },
+    {
       "matchUpdateTypes": [
         "pin",
         "digest",
-        "patch",
-        "lockFileMaintenance"
+        "patch"
       ],
       "addLabels": [
         "release:patch"
