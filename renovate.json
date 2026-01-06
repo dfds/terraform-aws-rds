@@ -58,7 +58,9 @@
       "description": "Group dependencies affecting the QA environment.",
       "additionalBranchPrefix": "qa/",
       "matchFileNames": [
-        "tests/qa/**"
+        "tests/qa/**",
+        ".github/**",
+        "mise.toml"
       ],
       "addLabels": [
         "norelease"
