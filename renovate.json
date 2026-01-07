@@ -66,6 +66,7 @@
       "description": "Group dependencies affecting the QA environment.",
       "matchFileNames": [
         "tests/qa/**",
+        "scripts/qa/**",
         ".github/**",
         "mise.toml"
       ],
