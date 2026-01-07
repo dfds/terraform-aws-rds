@@ -57,6 +57,13 @@
     {
       "description": "Group dependencies affecting the QA environment.",
       "additionalBranchPrefix": "qa/",
+      "addLabels": [
+        "norelease"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Group dependencies affecting the QA environment.",
       "matchFileNames": [
         "tests/qa/**",
         ".github/**",
