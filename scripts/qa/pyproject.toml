@@ -6,7 +6,7 @@ authors = ["Audun Nes <aunes@dfds.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 boto3 = "^1.29.3"
 sqlalchemy = "^2.0.23"
 pandas = "^2.1.3"
