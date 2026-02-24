@@ -50,7 +50,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: op://CloudEng-General/AWS account dfds-cloudengineering-bluep-nvfgm IAM user Deploy/password
 
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.5.7"
 
