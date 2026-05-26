@@ -3,12 +3,6 @@
   "extends": [
     "local>dfds/renovate-config"
   ],
-  "terraform": {
-    "managerFilePatterns": [
-      "/\\.tf$/",
-      "/\\.tofu$/"
-    ]
-  },
   "packageRules": [
     {
       "description": "Group dependencies affecting the QA environment.",
@@ -21,6 +15,10 @@
       "addLabels": [
         "norelease"
       ]
+    },
+    {
+      "matchCategories": ["python"],
+      "enabled": false
     }
   ]
 }
