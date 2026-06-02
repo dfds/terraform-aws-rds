@@ -2,7 +2,7 @@ name: Auto release on merge
 
 on:
   push:
-    branches: [master, main]
+    branches: [main]
     paths-ignore:
       - .github/**
       - "**/*.md"
@@ -17,19 +17,15 @@ on:
 
 jobs:
   auto-release:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - id: release
-        uses: rymndhng/release-on-push-action@master
-        with:
-          bump_version_scheme: patch
-          tag_prefix: ""
+    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@v2.0.1
 
+  dispatch-blueprints:
+    needs: auto-release
+    runs-on: ubuntu-latest
+    steps:
       - name: Dispatch to blueprints
         run: |
           curl -X POST https://api.github.com/repos/dfds/infrastructure-blueprints/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.AUTH_TOKEN }} \
-          --data '{"event_type": "trigger-rds-workflow", "client_payload": { "release_tag": "${{ steps.release.outputs.tag_name }}" }}'
+          --data '{"event_type": "trigger-rds-workflow", "client_payload": { "release_tag": "${{ needs.auto-release.outputs.tag_name }}" }}'
