@@ -3,7 +3,7 @@ locals {
   ########################################################################
   # Parameter group
   ########################################################################
-  pg_major_version          = tonumber(split(".", local.engine_version)[0])
+  pg_major_version                = tonumber(split(".", local.engine_version)[0])
   create_db_parameter_group       = true
   parameter_group_family          = data.aws_rds_engine_version.engine_info.parameter_group_family
   parameter_group_use_name_prefix = true
