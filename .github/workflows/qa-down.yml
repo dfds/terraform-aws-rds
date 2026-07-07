@@ -62,7 +62,7 @@ jobs:
 
       - name: Send alert if job fails
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.2
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.4
         with:
           slack_webhook: ${{ env.SLACK_WEBHOOK }}
           slack_message: Teardown QA environment for RDS failed.
