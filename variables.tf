@@ -136,6 +136,26 @@ variable "instance_class" {
   description = <<EOF
     Specify a db instance class to use. If unsure use a small instance class like db.xx.micro and scale up later.
     Please make careful consideration when choosing larger instance types as this will have a direct impact on the cost of the RDS instance.
+    This is the recommended list of instance classes to use for RDS instances:
+      - db.t3.micro
+      - db.t3.small
+      - db.t3.medium
+      - db.t3.large
+      - db.t3.xlarge
+      - db.t3.2xlarge
+      - db.r6g.large
+      - db.r6g.xlarge
+      - db.m6g.large
+      - db.m6g.xlarge
+      - db.m4.large
+      - db.m5d.large
+      - db.m6i.large
+      - db.m5.xlarge
+      - db.t4g.micro
+      - db.t4g.small
+      - db.t4g.large
+      - db.t4g.xlarge
+    This can be used for inspiration as Amazon can add new classes to replace the existing. See [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html) for more information.
 EOF
   type        = string
 }
