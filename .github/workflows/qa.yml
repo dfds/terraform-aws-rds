@@ -49,29 +49,28 @@ jobs:
           AWS_ACCESS_KEY_ID: op://CloudEng-General/AWS account dfds-cloudengineering-bluep-nvfgm IAM user Deploy/username
           AWS_SECRET_ACCESS_KEY: op://CloudEng-General/AWS account dfds-cloudengineering-bluep-nvfgm IAM user Deploy/password
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v4
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v2
         with:
-          terraform_version: "1.5.7"
+          tofu_version: latest
 
-      - name: Terraform Init
-        id: init
-        run: terraform init
+      - name: OpenTofu init
+        run: tofu init
         working-directory: tests/qa
 
-      - name: Terraform Validate
+      - name: OpenTofu Validate
         id: validate
-        run: terraform validate -no-color
+        run: tofu validate -no-color
         working-directory: tests/qa
 
-      - name: Terraform Plan
+      - name: OpenTofu Plan
         id: plan
-        run: terraform plan -no-color -out qa.plan
+        run: tofu plan -no-color -out qa.plan
         working-directory: tests/qa
 
-      - name: Terraform Apply
+      - name: OpenTofu Apply
         id: apply
-        run: terraform apply -input=false -auto-approve qa.plan
+        run: tofu apply -input=false -auto-approve qa.plan
         working-directory: tests/qa
 
       - name: Send alert if job fails
