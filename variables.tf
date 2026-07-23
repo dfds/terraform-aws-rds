@@ -131,62 +131,13 @@ EOF
   default     = "final"
 }
 
+
 variable "instance_class" {
   description = <<EOF
-    Specify instance type of the RDS instance.
-    Valid Values:
-      "db.t3.micro",
-      "db.t3.small",
-      "db.t3.medium",
-      "db.t3.large",
-      "db.t3.xlarge",
-      "db.t3.2xlarge",
-      "db.r6g.large",
-      "db.r6g.xlarge",
-      "db.m6g.large",
-      "db.m6g.xlarge",
-      "db.t2.micro",
-      "db.t2.small",
-      "db.t2.medium",
-      "db.m4.large",
-      "db.m5d.large",
-      "db.m6i.large",
-      "db.m5.xlarge",
-      "db.t4g.micro",
-      "db.t4g.small",
-      "db.t4g.large",
-      "db.t4g.xlarge"
-    Notes: If omitted, the instance type will be set to db.t3.micro.
+    Specify a db instance class to use. If unsure use a small instance class like db.xx.micro and scale up later.
+    Please make careful consideration when choosing larger instance types as this will have a direct impact on the cost of the RDS instance.
 EOF
   type        = string
-  default     = null
-  validation {
-    condition = var.instance_class == null ? true : (
-      contains([
-        "db.t3.micro",
-        "db.t3.small",
-        "db.t3.medium",
-        "db.t3.large",
-        "db.t3.xlarge",
-        "db.t3.2xlarge",
-        "db.r6g.large",
-        "db.r6g.xlarge",
-        "db.m6g.large",
-        "db.m6g.xlarge",
-        "db.t2.micro",
-        "db.t2.small",
-        "db.t2.medium",
-        "db.m4.large",
-        "db.m5d.large",
-        "db.m6i.large",
-        "db.m5.xlarge",
-        "db.t4g.micro",
-        "db.t4g.small",
-        "db.t4g.large",
-        "db.t4g.xlarge"],
-    var.instance_class) ? true : false)
-    error_message = "The instance type is not allowed."
-  }
 }
 
 variable "db_name" {
