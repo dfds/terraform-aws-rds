@@ -456,7 +456,7 @@ EOF
 # CloudWatch Log Group
 ################################################################################
 variable "manage_cloudwatch_log_group_with_terraform" {
-  default = false
+  default     = false
   description = <<EOF
     Specify whether or not to manage the CloudWatch log group with Terraform.
     This will help on setting the retention policy for the log group.
@@ -465,7 +465,7 @@ variable "manage_cloudwatch_log_group_with_terraform" {
     - If set to true, the log group will be created and managed by Terraform.
     - If set to false, the log group will be created automatically but will not be managed by Terraform."
   EOF
-  type = bool
+  type        = bool
 }
 
 
@@ -609,13 +609,13 @@ EOF
 }
 
 variable "additional_rds_proxy_security_groups" {
-  type = list(string)
+  type        = list(string)
   description = <<EOF
     Specify additional security groups to attach by ID to the RDS proxy.
     Valid Values: .
     Notes: .}
 EOF
-default = []
+  default     = []
 }
 
 variable "proxy_additional_security_group_rules" {
@@ -666,13 +666,13 @@ EOF
 }
 
 variable "additional_rds_security_groups" {
-  type = list(string)
+  type        = list(string)
   description = <<EOF
     Specify additional security groups to attach by ID to the RDS instance.
     Valid Values: .
     Notes: .}
 EOF
-default = []
+  default     = []
 }
 
 variable "additional_rds_security_group_rules" {
@@ -858,4 +858,15 @@ variable "automation_initiator_location" {
     condition     = var.automation_initiator_location == null || can(regex("^(https:\\/\\/www\\.|http:\\/\\/www\\.|https:\\/\\/|http:\\/\\/)?[a-zA-Z0-9]{2,}(\\.[a-zA-Z0-9]{2,})(\\.[a-zA-Z0-9]{2,})?(\\/[a-zA-Z0-9_.:/=+-@][^?|^/&]{2,})+[\\/]?$", var.automation_initiator_location))
     error_message = "Value for var.automation_initiator_location contains invalid characters or URL is malformed. See AWS [user guide](https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html) for more information. Example: https://github.com/dfds/terraform-aws-rds"
   }
+}
+
+variable "engine_lifecycle_support" {
+  description = <<EOF
+    The lifecycle type for the DB instance/cluster. This setting applies only to RDS for MySQL and RDS for PostgreSQL.
+    Valid Values: `open-source-rds-extended-support`, `open-source-rds-extended-support-disabled`.
+    Notes: Default is `open-source-rds-extended-support-disabled`, which prevents creation of instances with engine versions in extended support. 
+    We strongly discourage setting this value to `open-source-rds-extended-support` as it will allow creation of instances with engine versions in extended support which is expensive and not recommended.
+  EOF
+  type        = string
+  default     = "open-source-rds-extended-support-disabled"
 }

@@ -546,3 +546,9 @@ variable "engine_native_audit_fields_included" {
   type        = bool
   default     = false
 }
+
+variable "engine_lifecycle_support" {
+  description = "The life cycle type for this DB cluster. This setting applies only to RDS for MySQL and RDS for PostgreSQL. Valid values are `open-source-rds-extended-support`, `open-source-rds-extended-support-disabled`. Default value is `open-source-rds-extended-support-disabled`."
+  type        = string
+  default     = "open-source-rds-extended-support-disabled"
+}

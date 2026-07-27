@@ -117,6 +117,7 @@ module "db_instance" {
   enabled_cloudwatch_logs_exports       = local.enabled_logs_exports
   oidc_provider                         = local.oidc_provider
   kubernetes_namespace                  = local.kubernetes_namespace
+  engine_lifecycle_support              = var.engine_lifecycle_support
   tags                                  = local.all_tags
   rds_tags                              = local.data_tags
 }
@@ -152,6 +153,7 @@ module "db_multi_az_cluster" {
   vpc_security_group_ids          = concat([module.security_group.security_group_id], var.additional_rds_security_groups)
   skip_final_snapshot             = var.skip_final_snapshot
   enabled_cloudwatch_logs_exports = local.enabled_logs_exports
+  engine_lifecycle_support        = var.engine_lifecycle_support
   tags                            = local.all_tags # might also need to add rds_tags
 
 }
@@ -183,6 +185,7 @@ module "db_cluster_serverless" { # TODO: Revisit defaults and rename to aurora s
     one = {}
     two = {}
   }
+  engine_lifecycle_support = var.engine_lifecycle_support
 }
 
 module "db_proxy" {
