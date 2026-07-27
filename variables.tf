@@ -158,6 +158,7 @@ variable "instance_class" {
     This can be used for inspiration as Amazon can add new classes to replace the existing. See [documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html) for more information.
 EOF
   type        = string
+  default     = null
 }
 
 variable "db_name" {
