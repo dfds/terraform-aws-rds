@@ -193,7 +193,7 @@ module "db_proxy" {
   count                                 = var.is_proxy_included ? 1 : 0
   tags                                  = local.all_tags
   name                                  = var.identifier
-  auth                                  = local.proxy_auth_config
+  auth                                  = merge(local.proxy_auth_config, var.proxy_additional_auth)
   debug_logging                         = var.proxy_debug_logging_is_enabled
   engine_family                         = var.proxy_engine_family
   idle_client_timeout                   = var.proxy_idle_client_timeout

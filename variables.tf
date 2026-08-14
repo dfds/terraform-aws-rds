@@ -651,6 +651,19 @@ EOF
   }
 }
 
+variable "proxy_additional_auth" {
+  description = <<EOF
+    Additional RDS Proxy auth entries for custom database users (beyond the master user).
+    Keyed by username.
+EOF
+  type = map(object({
+    description               = optional(string)
+    secret_arn                = string
+    iam_auth                  = optional(string, "DISABLED") # DISABLED | REQUIRED
+  }))
+  default = {}
+}
+
 
 ################################################################################
 # Security Group
@@ -864,7 +877,7 @@ variable "engine_lifecycle_support" {
   description = <<EOF
     The lifecycle type for the DB instance/cluster. This setting applies only to RDS for MySQL and RDS for PostgreSQL.
     Valid Values: `open-source-rds-extended-support`, `open-source-rds-extended-support-disabled`.
-    Notes: Default is `open-source-rds-extended-support-disabled`, which prevents creation of instances with engine versions in extended support. 
+    Notes: Default is `open-source-rds-extended-support-disabled`, which prevents creation of instances with engine versions in extended support.
     We strongly discourage setting this value to `open-source-rds-extended-support` as it will allow creation of instances with engine versions in extended support which is expensive and not recommended.
   EOF
   type        = string
