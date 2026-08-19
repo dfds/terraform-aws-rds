@@ -657,7 +657,7 @@ variable "proxy_additional_auth" {
     Keyed by username.
 EOF
   type = map(object({
-    description               = optional(string)
+    description               = optional(string, "Additional RDS Proxy auth entry for custom database user")
     secret_arn                = string
     iam_auth                  = optional(string, "DISABLED") # DISABLED | REQUIRED
   }))
