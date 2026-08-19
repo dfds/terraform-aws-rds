@@ -70,6 +70,8 @@ locals {
     }
   } : {}
 
+  proxy_additional_secret_arns = length(var.proxy_additional_auth) > 0 ? [for auth in var.proxy_additional_auth : auth.secret_arn] : []
+
   ########################################################################
   # Instance configs
   ########################################################################

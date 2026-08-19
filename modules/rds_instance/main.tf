@@ -200,7 +200,10 @@ data "aws_iam_policy_document" "secretsmanager" {
   statement {
     sid       = "GetSecrets"
     effect    = "Allow"
-    resources = ["arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:rds!db-*"]
+    resources = concat(
+      ["arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:rds!db-*"],
+      var.proxy_additional_secret_arns
+    )
 
     actions = [
       "secretsmanager:ListSecretVersionIds",

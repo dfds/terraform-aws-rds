@@ -383,3 +383,16 @@ variable "engine_lifecycle_support" {
   type        = string
   default     = "open-source-rds-extended-support-disabled"
 }
+
+variable "proxy_additional_secret_arns" {
+  type = list(string)
+  default = []
+  description = <<EOF
+    List of additional secret ARNs to be used for RDS Proxy authentication.
+    This is useful when you have multiple database users that need to authenticate
+    through the same RDS Proxy. Each secret ARN should correspond to a different database user.
+    The secrets should be created in AWS Secrets Manager and contain the necessary credentials
+    for the database users. The RDS Proxy will use these secrets to authenticate the users when
+    they connect to the database through the proxy.
+EOF
+}

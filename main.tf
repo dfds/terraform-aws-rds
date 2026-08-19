@@ -118,6 +118,7 @@ module "db_instance" {
   oidc_provider                         = local.oidc_provider
   kubernetes_namespace                  = local.kubernetes_namespace
   engine_lifecycle_support              = var.engine_lifecycle_support
+  proxy_additional_secret_arns          = local.proxy_additional_secret_arns
   tags                                  = local.all_tags
   rds_tags                              = local.data_tags
 }
